@@ -4,131 +4,231 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BestCompanion - Privacy Policy</title>
+    <meta name="description" content="Privacy policy for BestCompanion, an always-on calendar display for dementia and elderly care.">
+    <link rel="icon" type="image/png" href="icon.png">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 24px;
-            line-height: 1.7;
-            color: #333;
-            background: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            color: #e0e0e0; background: #0a0a0a; line-height: 1.7;
         }
-        h1 {
-            font-size: 28px;
-            border-bottom: 2px solid #2196F3;
-            padding-bottom: 12px;
-            color: #1a1a1a;
+        a { color: #64b5f6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .hero {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50vh;
+            z-index: -1;
+            overflow: hidden;
         }
-        h2 {
-            font-size: 20px;
-            margin-top: 32px;
-            color: #1a1a1a;
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        p, li {
-            font-size: 15px;
-            color: #444;
+        .hero-spacer {
+            height: 50vh;
         }
-        ul {
-            padding-left: 24px;
+
+        .page-content {
+            position: relative;
+            background: #0a0a0a;
         }
-        li {
-            margin-bottom: 6px;
+
+        .header {
+            text-align: center;
+            padding: 24px 24px 16px;
         }
-        .updated {
-            color: #888;
+        .header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .header .updated {
+            color: #666;
             font-size: 14px;
         }
-        .contact {
-            background: #f5f5f5;
-            padding: 16px;
-            border-radius: 8px;
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 24px 60px;
+        }
+
+        .intro {
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 36px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        p { color: #bbb; font-size: 15px; margin-bottom: 12px; }
+
+        ul {
+            padding-left: 24px;
+            margin-bottom: 12px;
+        }
+        li {
+            color: #bbb;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        li strong { color: #e0e0e0; }
+
+        .contact-card {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 24px;
             margin-top: 24px;
+            text-align: center;
+        }
+        .contact-card p { color: #999; margin-bottom: 8px; }
+        .contact-card a { font-size: 17px; font-weight: 600; }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 32px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            border-top: 1px solid #1a1a1a;
+            color: #666;
+            font-size: 14px;
+        }
+        footer a { color: #888; margin: 0 12px; }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 28px; }
         }
     </style>
 </head>
 <body>
 
-<h1>BestCompanion &mdash; Privacy Policy</h1>
-<p class="updated">Last updated: May 7, 2026</p>
+<div class="hero">
+    <img src="PrivacyPolicyBanner.png" alt="Your Privacy Matters">
+</div>
+<div class="hero-spacer"></div>
 
-<p>
-    BestCompanion is a calendar display application designed to help elderly individuals and people living with
-    dementia, Alzheimer's disease, or age-related memory challenges. This privacy policy explains how the app
-    handles your information.
-</p>
-
-<h2>Information We Access</h2>
-<p>BestCompanion accesses the following data through your Google account:</p>
-<ul>
-    <li><strong>Google Calendar events</strong> &mdash; The app reads your calendar events for the current day
-        in order to display them on screen. This includes event titles, times, and calendar names.</li>
-    <li><strong>Google account email</strong> &mdash; Used solely for authentication through Google Sign-In.</li>
-</ul>
-
-<h2>How We Use Your Information</h2>
-<ul>
-    <li>Calendar events are fetched and displayed on the device screen in real time.</li>
-    <li>Your Google account email is used only to authenticate with Google Calendar.</li>
-    <li>No data is used for advertising, analytics, profiling, or any purpose other than displaying your calendar.</li>
-</ul>
-
-<h2>Data Storage</h2>
-<ul>
-    <li>BestCompanion does <strong>not</strong> store your calendar events or personal data on any external server.</li>
-    <li>All calendar data is fetched directly from Google's servers and kept in the device's temporary memory only while the app is running.</li>
-    <li>User preferences (display settings, language, selected calendars) are stored locally on the device using standard Android storage and are never transmitted.</li>
-</ul>
-
-<h2>Data Sharing</h2>
-<p>
-    BestCompanion does <strong>not</strong> share, sell, or transmit your personal data or calendar information
-    to any third party. The only network communication is directly between the app and Google's Calendar API
-    on your behalf.
-</p>
-
-<h2>Third-Party Services</h2>
-<p>The app uses the following third-party services:</p>
-<ul>
-    <li><strong>Google Sign-In</strong> &mdash; For account authentication. Governed by
-        <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</li>
-    <li><strong>Google Calendar API</strong> &mdash; For reading calendar events. Governed by
-        <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</li>
-</ul>
-
-<h2>Permissions</h2>
-<ul>
-    <li><strong>Internet access</strong> &mdash; Required to connect to Google Calendar and fetch events.</li>
-    <li><strong>Calendar read access</strong> &mdash; Requested via Google Sign-In OAuth2 scope (calendar.readonly). The app can only read calendar data; it cannot create, modify, or delete events.</li>
-</ul>
-
-<h2>Children's Privacy</h2>
-<p>
-    BestCompanion is not directed at children under the age of 13. The app is designed as a caregiver tool for
-    elderly individuals. We do not knowingly collect personal information from children.
-</p>
-
-<h2>Data Retention and Deletion</h2>
-<ul>
-    <li>Calendar data exists only in temporary memory while the app is running and is cleared when the app is closed.</li>
-    <li>To remove all locally stored preferences, you can clear the app's data in Android Settings or uninstall the app.</li>
-    <li>To revoke calendar access, remove BestCompanion from your Google account's connected apps at
-        <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li>
-</ul>
-
-<h2>Changes to This Policy</h2>
-<p>
-    We may update this privacy policy from time to time. Any changes will be reflected on this page with an
-    updated revision date.
-</p>
-
-<h2>Contact</h2>
-<div class="contact">
-    <p>
-        If you have any questions about this privacy policy or the app's data practices, please contact us at:<br>
-        <strong>best.companion.app@gmail.com</strong>
-    </p>
+<div class="page-content">
+<div class="header">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: May 17, 2026</p>
 </div>
 
+<div class="content">
+    <p class="intro">
+        BestCompanion is a calendar display application designed to help elderly individuals and people living with
+        dementia, Alzheimer's disease, or age-related memory challenges. This privacy policy explains how the app
+        handles your information.
+    </p>
+
+    <h2>Information We Access</h2>
+    <p>BestCompanion accesses the following data through your Google account:</p>
+    <ul>
+        <li><strong>Google Calendar events</strong> &mdash; The app reads your calendar events for the current day
+            in order to display them on screen. This includes event titles, times, and calendar names.</li>
+        <li><strong>Google account email</strong> &mdash; Used solely for authentication through Google Sign-In.</li>
+    </ul>
+
+    <h2>How We Use Your Information</h2>
+    <ul>
+        <li>Calendar events are fetched and displayed on the device screen in real time.</li>
+        <li>Your Google account email is used only to authenticate with Google Calendar.</li>
+        <li>No data is used for advertising, analytics, profiling, or any purpose other than displaying your calendar.</li>
+    </ul>
+
+    <h2>Data Storage</h2>
+    <ul>
+        <li>BestCompanion does <strong>not</strong> store your calendar events or personal data on any external server.</li>
+        <li>All calendar data is fetched directly from Google's servers and kept in the device's temporary memory only while the app is running.</li>
+        <li>User preferences (display settings, language, selected calendars) are stored locally on the device using standard Android storage and are never transmitted.</li>
+    </ul>
+
+    <h2>Data Sharing</h2>
+    <p>
+        BestCompanion does <strong>not</strong> share, sell, or transmit your personal data or calendar information
+        to any third party. The only network communication is directly between the app and Google's Calendar API
+        on your behalf.
+    </p>
+
+    <h2>Third-Party Services</h2>
+    <p>The app uses the following third-party services:</p>
+    <ul>
+        <li><strong>Google Sign-In</strong> &mdash; For account authentication. Governed by
+            <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</li>
+        <li><strong>Google Calendar API</strong> &mdash; For reading calendar events. Governed by
+            <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</li>
+    </ul>
+
+    <h2>Permissions</h2>
+    <ul>
+        <li><strong>Internet access</strong> &mdash; Required to connect to Google Calendar and fetch events.</li>
+        <li><strong>Calendar read access</strong> &mdash; Requested via Google Sign-In OAuth2 scope (calendar.readonly). The app can only read calendar data; it cannot create, modify, or delete events.</li>
+    </ul>
+
+    <h2>Children's Privacy</h2>
+    <p>
+        BestCompanion is not directed at children under the age of 13. The app is designed as a caregiver tool for
+        elderly individuals. We do not knowingly collect personal information from children.
+    </p>
+
+    <h2>Data Retention and Deletion</h2>
+    <ul>
+        <li>Calendar data exists only in temporary memory while the app is running and is cleared when the app is closed.</li>
+        <li>To remove all locally stored preferences, you can clear the app's data in Android Settings or uninstall the app.</li>
+        <li>To revoke calendar access, remove BestCompanion from your Google account's connected apps at
+            <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li>
+    </ul>
+
+    <h2>Changes to This Policy</h2>
+    <p>
+        We may update this privacy policy from time to time. Any changes will be reflected on this page with an
+        updated revision date.
+    </p>
+
+    <h2>Contact</h2>
+    <div class="contact-card">
+        <p>If you have any questions about this privacy policy or the app's data practices, please contact us at:</p>
+        <a href="mailto:best.companion.app@gmail.com">best.companion.app@gmail.com</a>
+    </div>
+
+    <a class="back-link" href="index.html">&larr; Back to BestCompanion</a>
+</div>
+
+<footer>
+    <p>
+        <a href="index.html">Home</a>
+        <a href="mailto:best.companion.app@gmail.com">Contact</a>
+    </p>
+    <p style="margin-top:12px;">&copy; 2026 BestCompanion. All rights reserved.</p>
+</footer>
+</div>
+
+<script>
+const hero = document.querySelector('.hero');
+window.addEventListener('scroll', () => {
+    hero.style.transform = 'translateY(' + (window.scrollY * -0.5) + 'px)';
+}, { passive: true });
+</script>
 </body>
 </html>
