@@ -8,301 +8,157 @@
     <link rel="icon" type="image/png" href="icon.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            color: #e0e0e0;
-            background: #0a0a0a;
-            line-height: 1.7;
+            color: #e0e0e0; background: #0a0a0a; line-height: 1.7;
         }
-
         a { color: #64b5f6; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
+        /* Language picker */
+        .lang-picker {
+            position: fixed; top: 16px; right: 16px; z-index: 100;
+        }
+        .lang-picker select {
+            background: #1a1a1a; color: #ccc; border: 1px solid #333;
+            border-radius: 6px; padding: 6px 12px; font-size: 14px;
+            cursor: pointer; outline: none;
+        }
+        .lang-picker select:hover { border-color: #555; }
+
         /* Hero */
         .hero {
-            text-align: center;
-            padding: 80px 24px 60px;
+            text-align: center; padding: 80px 24px 60px;
             background: linear-gradient(180deg, #0d1b2a 0%, #0a0a0a 100%);
         }
-        .hero img.icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 24px;
-            margin-bottom: 24px;
-        }
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        .hero .tagline {
-            font-size: 22px;
-            color: #90caf9;
-            max-width: 600px;
-            margin: 0 auto 32px;
-        }
-        .hero .subtitle {
-            font-size: 17px;
-            color: #aaa;
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
+        .hero img.icon { width: 120px; height: 120px; border-radius: 24px; margin-bottom: 24px; }
+        .hero h1 { font-size: 48px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+        .hero .tagline { font-size: 22px; color: #90caf9; max-width: 600px; margin: 0 auto 32px; }
+        .hero .subtitle { font-size: 17px; color: #aaa; max-width: 700px; margin: 0 auto 40px; }
         .cta-button {
-            display: inline-block;
-            background: #1a73e8;
-            color: #fff;
-            padding: 16px 40px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            transition: background 0.2s;
+            display: inline-block; background: #1a73e8; color: #fff;
+            padding: 16px 40px; border-radius: 8px; font-size: 18px;
+            font-weight: 600; transition: background 0.2s;
         }
-        .cta-button:hover {
-            background: #1565c0;
-            text-decoration: none;
-        }
-        .cta-button img {
-            height: 24px;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
+        .cta-button:hover { background: #1565c0; text-decoration: none; }
 
-        /* Sections */
-        section {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 60px 24px;
-        }
-        section h2 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        section .section-subtitle {
-            text-align: center;
-            color: #999;
-            font-size: 17px;
-            margin-bottom: 40px;
-        }
+        section { max-width: 960px; margin: 0 auto; padding: 60px 24px; }
+        section h2 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 16px; text-align: center; }
+        section .section-subtitle { text-align: center; color: #999; font-size: 17px; margin-bottom: 40px; }
 
-        /* Feature cards */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-        .feature-card {
-            background: #141414;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 28px;
-        }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .feature-card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 28px; }
         .feature-card .icon-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 16px;
+            width: 48px; height: 48px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 16px;
         }
-        .feature-card h3 {
-            font-size: 20px;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .feature-card p {
-            color: #999;
-            font-size: 15px;
-        }
+        .feature-card h3 { font-size: 20px; color: #fff; margin-bottom: 8px; }
+        .feature-card p { color: #999; font-size: 15px; }
 
-        /* Use cases */
-        .use-cases {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 32px;
-        }
-        .use-case {
-            background: #111;
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-        }
-        .use-case .emoji {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-        .use-case h3 {
-            color: #fff;
-            font-size: 17px;
-            margin-bottom: 6px;
-        }
-        .use-case p {
-            color: #888;
-            font-size: 14px;
-        }
+        .use-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 32px; }
+        .use-case { background: #111; border-radius: 12px; padding: 24px; text-align: center; }
+        .use-case .emoji { font-size: 40px; margin-bottom: 12px; }
+        .use-case h3 { color: #fff; font-size: 17px; margin-bottom: 6px; }
+        .use-case p { color: #888; font-size: 14px; }
 
-        /* Languages */
-        .languages {
-            text-align: center;
-            padding: 40px 24px;
-            background: #0d0d0d;
-        }
-        .languages .lang-list {
-            max-width: 700px;
-            margin: 16px auto 0;
-            color: #888;
-            font-size: 15px;
-            line-height: 2;
-        }
+        .languages-section { text-align: center; padding: 40px 24px; background: #0d0d0d; }
+        .lang-list { max-width: 700px; margin: 16px auto 0; color: #888; font-size: 15px; line-height: 2; }
 
-        /* Screenshot */
-        .screenshot-section {
-            text-align: center;
-            padding: 40px 24px;
-        }
-        .screenshot-section img {
-            max-width: 100%;
-            width: 800px;
-            border-radius: 12px;
-            border: 1px solid #222;
-        }
+        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .step-num { font-size: 48px; margin-bottom: 12px; color: #fff; }
 
-        /* Footer */
         footer {
-            text-align: center;
-            padding: 40px 24px;
-            border-top: 1px solid #1a1a1a;
-            color: #666;
-            font-size: 14px;
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid #1a1a1a; color: #666; font-size: 14px;
         }
-        footer a {
-            color: #888;
-            margin: 0 12px;
-        }
+        footer a { color: #888; margin: 0 12px; }
 
-        /* Responsive */
+        /* RTL */
+        [dir="rtl"] .lang-picker { right: auto; left: 16px; }
+
         @media (max-width: 600px) {
             .hero h1 { font-size: 32px; }
             .hero .tagline { font-size: 18px; }
             section h2 { font-size: 26px; }
+            .steps-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<!-- Hero -->
-<div class="hero">
-    <img class="icon" src="icon.png" alt="BestCompanion icon">
-    <h1>BestCompanion</h1>
-    <p class="tagline">An always-on calendar display for dementia &amp; elderly care</p>
-    <p class="subtitle">
-        Place it on a tablet and give your loved one a clear, constant view of the day ahead.
-        Caregivers manage everything remotely through Google Calendar.
-    </p>
-    <a class="cta-button" href="https://play.google.com/store/apps/details?id=com.cok.bestcompanion">
-        Get it on Google Play
-    </a>
+<!-- Language picker -->
+<div class="lang-picker">
+    <select id="langSelect" onchange="setLanguage(this.value)"></select>
 </div>
 
-<!-- Key Features -->
+<!-- Hero -->
+<div class="hero">
+    <img class="icon" src="icon.png" alt="BestCompanion">
+    <h1>BestCompanion</h1>
+    <p class="tagline" data-i18n="tagline"></p>
+    <p class="subtitle" data-i18n="subtitle"></p>
+    <a class="cta-button" href="https://play.google.com/store/apps/details?id=com.cok.bestcompanion" data-i18n="cta"></a>
+</div>
+
+<!-- Features -->
 <section>
-    <h2>Designed for What Matters</h2>
-    <p class="section-subtitle">Simple, clear, and always visible &mdash; built for people who need it most</p>
+    <h2 data-i18n="featuresTitle"></h2>
+    <p class="section-subtitle" data-i18n="featuresSubtitle"></p>
     <div class="features-grid">
         <div class="feature-card">
             <div class="icon-circle" style="background:#1a2744;">&#128197;</div>
-            <h3>Remotely Managed</h3>
-            <p>Caregivers add, change, or remove events from their own phone via Google Calendar. The display updates automatically. No touching the device needed.</p>
+            <h3 data-i18n="f1Title"></h3><p data-i18n="f1Desc"></p>
         </div>
         <div class="feature-card">
             <div class="icon-circle" style="background:#1a3a1a;">&#128264;</div>
-            <h3>Sound Alerts</h3>
-            <p>Choose from 6 alarm tones or silent mode. Get notified before events start &mdash; at event time, or 5, 10, 15, or 30 minutes before.</p>
+            <h3 data-i18n="f2Title"></h3><p data-i18n="f2Desc"></p>
         </div>
         <div class="feature-card">
             <div class="icon-circle" style="background:#2a1a2a;">&#128065;</div>
-            <h3>Extra-Large Text</h3>
-            <p>Designed to be read from across the room. Adjustable font sizes and customizable colors match any vision need and room lighting.</p>
+            <h3 data-i18n="f3Title"></h3><p data-i18n="f3Desc"></p>
         </div>
         <div class="feature-card">
             <div class="icon-circle" style="background:#2a2a1a;">&#128260;</div>
-            <h3>Always-On Display</h3>
-            <p>Screen stays on permanently with anti burn-in pixel shifting that protects OLED and AMOLED screens over months of continuous use.</p>
+            <h3 data-i18n="f4Title"></h3><p data-i18n="f4Desc"></p>
         </div>
         <div class="feature-card">
             <div class="icon-circle" style="background:#1a2a2a;">&#127760;</div>
-            <h3>20 Languages</h3>
-            <p>Full support for English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hebrew, Hindi, Turkish, and more.</p>
+            <h3 data-i18n="f5Title"></h3><p data-i18n="f5Desc"></p>
         </div>
         <div class="feature-card">
             <div class="icon-circle" style="background:#2a1a1a;">&#128274;</div>
-            <h3>Privacy First</h3>
-            <p>No data stored on external servers. No ads, no tracking. Calendar data stays between the device and Google &mdash; nothing else.</p>
+            <h3 data-i18n="f6Title"></h3><p data-i18n="f6Desc"></p>
         </div>
     </div>
 </section>
 
 <!-- Perfect For -->
 <section>
-    <h2>Perfect For</h2>
-    <p class="section-subtitle">Wherever your loved one needs a clear view of the day</p>
+    <h2 data-i18n="perfectTitle"></h2>
+    <p class="section-subtitle" data-i18n="perfectSubtitle"></p>
     <div class="use-cases">
-        <div class="use-case">
-            <div class="emoji">&#127869;</div>
-            <h3>Kitchen Table</h3>
-            <p>A daily schedule the whole family can see</p>
-        </div>
-        <div class="use-case">
-            <div class="emoji">&#128716;</div>
-            <h3>Bedside Display</h3>
-            <p>Wake up and see the day's plan with medication reminders</p>
-        </div>
-        <div class="use-case">
-            <div class="emoji">&#127970;</div>
-            <h3>Care Home</h3>
-            <p>Wall-mounted display updated by staff and family from anywhere</p>
-        </div>
-        <div class="use-case">
-            <div class="emoji">&#128138;</div>
-            <h3>Medication Reminders</h3>
-            <p>Sound alerts ensure appointments and pills are never missed</p>
-        </div>
+        <div class="use-case"><div class="emoji">&#127869;</div><h3 data-i18n="u1Title"></h3><p data-i18n="u1Desc"></p></div>
+        <div class="use-case"><div class="emoji">&#128716;</div><h3 data-i18n="u2Title"></h3><p data-i18n="u2Desc"></p></div>
+        <div class="use-case"><div class="emoji">&#127970;</div><h3 data-i18n="u3Title"></h3><p data-i18n="u3Desc"></p></div>
+        <div class="use-case"><div class="emoji">&#128138;</div><h3 data-i18n="u4Title"></h3><p data-i18n="u4Desc"></p></div>
     </div>
 </section>
 
 <!-- How It Works -->
 <section>
-    <h2>How It Works</h2>
-    <p class="section-subtitle">Three simple steps</p>
-    <div class="features-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="feature-card" style="text-align:center;">
-            <div style="font-size:48px; margin-bottom:12px;">1</div>
-            <h3>Install on a tablet</h3>
-            <p>Download BestCompanion from Google Play and sign in with a Google account.</p>
-        </div>
-        <div class="feature-card" style="text-align:center;">
-            <div style="font-size:48px; margin-bottom:12px;">2</div>
-            <h3>Share a calendar</h3>
-            <p>Share a Google Calendar with the tablet's account. That's the connection.</p>
-        </div>
-        <div class="feature-card" style="text-align:center;">
-            <div style="font-size:48px; margin-bottom:12px;">3</div>
-            <h3>Manage from afar</h3>
-            <p>Add events from your phone or computer. They appear on the tablet within minutes.</p>
-        </div>
+    <h2 data-i18n="howTitle"></h2>
+    <p class="section-subtitle" data-i18n="howSubtitle"></p>
+    <div class="features-grid steps-grid">
+        <div class="feature-card" style="text-align:center;"><div class="step-num">1</div><h3 data-i18n="s1Title"></h3><p data-i18n="s1Desc"></p></div>
+        <div class="feature-card" style="text-align:center;"><div class="step-num">2</div><h3 data-i18n="s2Title"></h3><p data-i18n="s2Desc"></p></div>
+        <div class="feature-card" style="text-align:center;"><div class="step-num">3</div><h3 data-i18n="s3Title"></h3><p data-i18n="s3Desc"></p></div>
     </div>
 </section>
 
 <!-- Languages -->
-<div class="languages">
-    <h2>Speaks Your Language</h2>
+<div class="languages-section">
+    <h2 data-i18n="langTitle"></h2>
     <div class="lang-list">
         English &bull; Espa&ntilde;ol &bull; Fran&ccedil;ais &bull; Deutsch &bull; Italiano &bull; Portugu&ecirc;s &bull;
         &#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081; &bull; &#26085;&#26412;&#35486; &bull;
@@ -312,23 +168,246 @@
     </div>
 </div>
 
-<!-- CTA -->
+<!-- Final CTA -->
 <section style="text-align:center;">
-    <h2>Give Your Loved One Clarity</h2>
-    <p class="section-subtitle">No ads. No clutter. No complicated menus.<br>Just the information they need, always visible.</p>
-    <a class="cta-button" href="https://play.google.com/store/apps/details?id=com.cok.bestcompanion">
-        Download on Google Play
-    </a>
+    <h2 data-i18n="ctaTitle"></h2>
+    <p class="section-subtitle" data-i18n="ctaSubtitle"></p>
+    <a class="cta-button" href="https://play.google.com/store/apps/details?id=com.cok.bestcompanion" data-i18n="cta"></a>
 </section>
 
 <!-- Footer -->
 <footer>
     <p>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="mailto:best.companion.app@gmail.com">Contact</a>
+        <a href="privacy-policy.html" data-i18n="privacy"></a>
+        <a href="mailto:best.companion.app@gmail.com" data-i18n="contact"></a>
     </p>
-    <p style="margin-top:12px;">&copy; 2026 BestCompanion. All rights reserved.</p>
+    <p style="margin-top:12px;">&copy; 2026 BestCompanion.</p>
 </footer>
 
+<script>
+const T = {
+en: {
+  _name: "English",
+  tagline: "An always-on calendar display for dementia & elderly care",
+  subtitle: "Place it on a tablet and give your loved one a clear, constant view of the day ahead. Caregivers manage everything remotely through Google Calendar.",
+  cta: "Get it on Google Play",
+  featuresTitle: "Designed for What Matters",
+  featuresSubtitle: "Simple, clear, and always visible \u2014 built for people who need it most",
+  f1Title: "Remotely Managed", f1Desc: "Caregivers add, change, or remove events from their own phone via Google Calendar. The display updates automatically. No touching the device needed.",
+  f2Title: "Sound Alerts", f2Desc: "Choose from 6 alarm tones or silent mode. Get notified before events start \u2014 at event time, or 5, 10, 15, or 30 minutes before.",
+  f3Title: "Extra-Large Text", f3Desc: "Designed to be read from across the room. Adjustable font sizes and customizable colors match any vision need and room lighting.",
+  f4Title: "Always-On Display", f4Desc: "Screen stays on permanently with anti burn-in pixel shifting that protects OLED and AMOLED screens over months of continuous use.",
+  f5Title: "20 Languages", f5Desc: "Full support for English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hebrew, Hindi, Turkish, and more.",
+  f6Title: "Privacy First", f6Desc: "No data stored on external servers. No ads, no tracking. Calendar data stays between the device and Google \u2014 nothing else.",
+  perfectTitle: "Perfect For",
+  perfectSubtitle: "Wherever your loved one needs a clear view of the day",
+  u1Title: "Kitchen Table", u1Desc: "A daily schedule the whole family can see",
+  u2Title: "Bedside Display", u2Desc: "Wake up and see the day\u2019s plan with medication reminders",
+  u3Title: "Care Home", u3Desc: "Wall-mounted display updated by staff and family from anywhere",
+  u4Title: "Medication Reminders", u4Desc: "Sound alerts ensure appointments and pills are never missed",
+  howTitle: "How It Works", howSubtitle: "Three simple steps",
+  s1Title: "Install on a tablet", s1Desc: "Download BestCompanion from Google Play and sign in with a Google account.",
+  s2Title: "Share a calendar", s2Desc: "Share a Google Calendar with the tablet\u2019s account. That\u2019s the connection.",
+  s3Title: "Manage from afar", s3Desc: "Add events from your phone or computer. They appear on the tablet within minutes.",
+  langTitle: "Speaks Your Language",
+  ctaTitle: "Give Your Loved One Clarity",
+  ctaSubtitle: "No ads. No clutter. No complicated menus.\nJust the information they need, always visible.",
+  privacy: "Privacy Policy", contact: "Contact"
+},
+es: {
+  _name: "Espa\u00f1ol",
+  tagline: "Pantalla de calendario siempre activa para el cuidado de personas mayores y con demencia",
+  subtitle: "Col\u00f3quelo en una tablet y ofrezca a su ser querido una visi\u00f3n clara y constante del d\u00eda. Los cuidadores gestionan todo de forma remota a trav\u00e9s de Google Calendar.",
+  cta: "Descargar en Google Play",
+  featuresTitle: "Dise\u00f1ado para lo que importa",
+  featuresSubtitle: "Simple, claro y siempre visible \u2014 creado para quienes m\u00e1s lo necesitan",
+  f1Title: "Gesti\u00f3n remota", f1Desc: "Los cuidadores a\u00f1aden, modifican o eliminan eventos desde su propio tel\u00e9fono a trav\u00e9s de Google Calendar. La pantalla se actualiza autom\u00e1ticamente.",
+  f2Title: "Alertas sonoras", f2Desc: "Elige entre 6 tonos de alarma o modo silencioso. Recibe notificaciones antes de los eventos.",
+  f3Title: "Texto extra grande", f3Desc: "Dise\u00f1ado para leerse desde el otro lado de la habitaci\u00f3n. Tama\u00f1os de fuente y colores ajustables.",
+  f4Title: "Pantalla siempre encendida", f4Desc: "La pantalla permanece encendida con protecci\u00f3n anti quemado para pantallas OLED y AMOLED.",
+  f5Title: "20 idiomas", f5Desc: "Soporte completo para espa\u00f1ol, ingl\u00e9s, franc\u00e9s, alem\u00e1n, italiano, portugu\u00e9s, ruso, japon\u00e9s, coreano, chino, \u00e1rabe, hebreo y m\u00e1s.",
+  f6Title: "Privacidad ante todo", f6Desc: "Sin datos en servidores externos. Sin anuncios ni rastreo. Los datos del calendario quedan entre el dispositivo y Google.",
+  perfectTitle: "Perfecto para",
+  perfectSubtitle: "Donde su ser querido necesite una visi\u00f3n clara del d\u00eda",
+  u1Title: "Mesa de cocina", u1Desc: "Un horario diario que toda la familia puede ver",
+  u2Title: "Mesita de noche", u2Desc: "Despierta y ve el plan del d\u00eda con recordatorios de medicaci\u00f3n",
+  u3Title: "Residencia", u3Desc: "Pantalla de pared actualizada por el personal y la familia desde cualquier lugar",
+  u4Title: "Recordatorios de medicaci\u00f3n", u4Desc: "Las alertas sonoras aseguran que no se pierdan citas ni pastillas",
+  howTitle: "C\u00f3mo funciona", howSubtitle: "Tres simples pasos",
+  s1Title: "Instalar en una tablet", s1Desc: "Descarga BestCompanion de Google Play e inicia sesi\u00f3n con una cuenta de Google.",
+  s2Title: "Compartir un calendario", s2Desc: "Comparte un Google Calendar con la cuenta de la tablet. Esa es la conexi\u00f3n.",
+  s3Title: "Gestionar a distancia", s3Desc: "A\u00f1ade eventos desde tu tel\u00e9fono u ordenador. Aparecen en la tablet en minutos.",
+  langTitle: "Habla tu idioma",
+  ctaTitle: "Dale claridad a tu ser querido",
+  ctaSubtitle: "Sin anuncios. Sin desorden. Sin men\u00fas complicados.\nSolo la informaci\u00f3n que necesitan, siempre visible.",
+  privacy: "Pol\u00edtica de privacidad", contact: "Contacto"
+},
+fr: {
+  _name: "Fran\u00e7ais",
+  tagline: "Affichage calendrier permanent pour les personnes \u00e2g\u00e9es et atteintes de d\u00e9mence",
+  subtitle: "Placez-le sur une tablette et offrez \u00e0 votre proche une vue claire et constante de la journ\u00e9e. Les aidants g\u00e8rent tout \u00e0 distance via Google Calendar.",
+  cta: "T\u00e9l\u00e9charger sur Google Play",
+  featuresTitle: "Con\u00e7u pour l\u2019essentiel",
+  featuresSubtitle: "Simple, clair et toujours visible \u2014 con\u00e7u pour ceux qui en ont le plus besoin",
+  f1Title: "G\u00e9r\u00e9 \u00e0 distance", f1Desc: "Les aidants ajoutent, modifient ou suppriment des \u00e9v\u00e9nements depuis leur propre t\u00e9l\u00e9phone via Google Calendar.",
+  f2Title: "Alertes sonores", f2Desc: "Choisissez parmi 6 tonalit\u00e9s ou le mode silencieux. Soyez pr\u00e9venu avant les \u00e9v\u00e9nements.",
+  f3Title: "Texte extra-large", f3Desc: "Lisible depuis l\u2019autre bout de la pi\u00e8ce. Tailles de police et couleurs personnalisables.",
+  f4Title: "Affichage permanent", f4Desc: "L\u2019\u00e9cran reste allum\u00e9 en permanence avec protection anti-marquage pour \u00e9crans OLED et AMOLED.",
+  f5Title: "20 langues", f5Desc: "Prise en charge compl\u00e8te du fran\u00e7ais, anglais, espagnol, allemand, italien, portugais, russe, japonais, cor\u00e9en, chinois, arabe, h\u00e9breu et plus.",
+  f6Title: "Confidentialit\u00e9 d\u2019abord", f6Desc: "Aucune donn\u00e9e stock\u00e9e sur des serveurs externes. Pas de publicit\u00e9s ni de suivi.",
+  perfectTitle: "Id\u00e9al pour",
+  perfectSubtitle: "Partout o\u00f9 votre proche a besoin d\u2019une vue claire de la journ\u00e9e",
+  u1Title: "Table de cuisine", u1Desc: "Un planning quotidien visible par toute la famille",
+  u2Title: "Table de chevet", u2Desc: "R\u00e9veillez-vous et voyez le programme avec les rappels de m\u00e9dicaments",
+  u3Title: "Maison de retraite", u3Desc: "Affichage mural mis \u00e0 jour par le personnel et la famille",
+  u4Title: "Rappels de m\u00e9dicaments", u4Desc: "Les alertes sonores garantissent que les rendez-vous ne sont jamais manqu\u00e9s",
+  howTitle: "Comment \u00e7a marche", howSubtitle: "Trois \u00e9tapes simples",
+  s1Title: "Installer sur une tablette", s1Desc: "T\u00e9l\u00e9chargez BestCompanion depuis Google Play et connectez-vous avec un compte Google.",
+  s2Title: "Partager un calendrier", s2Desc: "Partagez un Google Calendar avec le compte de la tablette. C\u2019est la connexion.",
+  s3Title: "G\u00e9rer \u00e0 distance", s3Desc: "Ajoutez des \u00e9v\u00e9nements depuis votre t\u00e9l\u00e9phone ou ordinateur. Ils apparaissent sur la tablette en minutes.",
+  langTitle: "Parle votre langue",
+  ctaTitle: "Offrez de la clart\u00e9 \u00e0 votre proche",
+  ctaSubtitle: "Pas de publicit\u00e9s. Pas de d\u00e9sordre. Pas de menus compliqu\u00e9s.\nJuste l\u2019information n\u00e9cessaire, toujours visible.",
+  privacy: "Politique de confidentialit\u00e9", contact: "Contact"
+},
+de: {
+  _name: "Deutsch",
+  tagline: "Dauerhafte Kalenderanzeige f\u00fcr Demenz- und Seniorenbetreuung",
+  subtitle: "Stellen Sie es auf ein Tablet und geben Sie Ihrem Angeh\u00f6rigen einen klaren, best\u00e4ndigen \u00dcberblick \u00fcber den Tag. Betreuer verwalten alles aus der Ferne \u00fcber Google Kalender.",
+  cta: "Bei Google Play herunterladen",
+  featuresTitle: "Entwickelt f\u00fcr das Wesentliche", featuresSubtitle: "Einfach, klar und immer sichtbar \u2014 f\u00fcr Menschen, die es am meisten brauchen",
+  f1Title: "Ferngesteuert", f1Desc: "Betreuer f\u00fcgen Termine hinzu oder \u00e4ndern sie von ihrem eigenen Telefon \u00fcber Google Kalender. Das Display aktualisiert sich automatisch.",
+  f2Title: "Akustische Alarme", f2Desc: "W\u00e4hlen Sie aus 6 Alarmtönen oder lautlosem Modus. Benachrichtigungen vor Terminen.",
+  f3Title: "Extragroße Schrift", f3Desc: "Lesbar von der anderen Seite des Raumes. Anpassbare Schriftgr\u00f6\u00dfen und Farben.",
+  f4Title: "Dauerhaft eingeschaltet", f4Desc: "Der Bildschirm bleibt dauerhaft an mit Anti-Einbrennschutz f\u00fcr OLED- und AMOLED-Bildschirme.",
+  f5Title: "20 Sprachen", f5Desc: "Vollst\u00e4ndige Unterst\u00fctzung f\u00fcr Deutsch, Englisch, Spanisch, Franz\u00f6sisch, Italienisch, Portugiesisch, Russisch, Japanisch und mehr.",
+  f6Title: "Datenschutz zuerst", f6Desc: "Keine Daten auf externen Servern. Keine Werbung, kein Tracking.",
+  perfectTitle: "Perfekt f\u00fcr", perfectSubtitle: "\u00dcberall, wo Ihr Angeh\u00f6riger einen klaren \u00dcberblick braucht",
+  u1Title: "K\u00fcchentisch", u1Desc: "Ein Tagesplan, den die ganze Familie sehen kann",
+  u2Title: "Nachttisch", u2Desc: "Aufwachen und den Tagesplan mit Medikamentenerinnerungen sehen",
+  u3Title: "Pflegeheim", u3Desc: "Wanddisplay, das von Personal und Familie aktualisiert wird",
+  u4Title: "Medikamentenerinnerungen", u4Desc: "Akustische Alarme stellen sicher, dass keine Termine verpasst werden",
+  howTitle: "So funktioniert es", howSubtitle: "Drei einfache Schritte",
+  s1Title: "Auf Tablet installieren", s1Desc: "Laden Sie BestCompanion von Google Play herunter und melden Sie sich mit einem Google-Konto an.",
+  s2Title: "Kalender teilen", s2Desc: "Teilen Sie einen Google Kalender mit dem Konto des Tablets. Das ist die Verbindung.",
+  s3Title: "Aus der Ferne verwalten", s3Desc: "F\u00fcgen Sie Termine von Ihrem Telefon oder Computer hinzu. Sie erscheinen in Minuten auf dem Tablet.",
+  langTitle: "Spricht Ihre Sprache",
+  ctaTitle: "Schenken Sie Klarheit", ctaSubtitle: "Keine Werbung. Kein Durcheinander. Keine komplizierten Men\u00fcs.\nNur die ben\u00f6tigten Informationen, immer sichtbar.",
+  privacy: "Datenschutzerkl\u00e4rung", contact: "Kontakt"
+},
+he: {
+  _name: "\u05e2\u05d1\u05e8\u05d9\u05ea",
+  _dir: "rtl",
+  tagline: "\u05ea\u05e6\u05d5\u05d2\u05ea \u05dc\u05d5\u05d7 \u05e9\u05e0\u05d4 \u05e7\u05d1\u05d5\u05e2\u05d4 \u05dc\u05d8\u05d9\u05e4\u05d5\u05dc \u05d1\u05e7\u05e9\u05d9\u05e9\u05d9\u05dd \u05d5\u05d3\u05de\u05e0\u05e6\u05d9\u05d4",
+  subtitle: "\u05d4\u05e6\u05d9\u05d1\u05d5 \u05d0\u05d5\u05ea\u05d5 \u05e2\u05dc \u05d8\u05d0\u05d1\u05dc\u05d8 \u05d5\u05ea\u05e0\u05d5 \u05dc\u05d9\u05e7\u05d9\u05e8\u05db\u05dd \u05ea\u05e6\u05d5\u05d2\u05d4 \u05d1\u05e8\u05d5\u05e8\u05d4 \u05d5\u05e7\u05d1\u05d5\u05e2\u05d4 \u05e9\u05dc \u05d4\u05d9\u05d5\u05dd. \u05d4\u05de\u05d8\u05e4\u05dc\u05d9\u05dd \u05de\u05e0\u05d4\u05dc\u05d9\u05dd \u05d4\u05db\u05dc \u05de\u05e8\u05d7\u05d5\u05e7 \u05d3\u05e8\u05da Google Calendar.",
+  cta: "\u05d4\u05d5\u05e8\u05d3\u05d4 \u05de-Google Play",
+  featuresTitle: "\u05de\u05e2\u05d5\u05e6\u05d1 \u05dc\u05de\u05d4 \u05e9\u05d7\u05e9\u05d5\u05d1", featuresSubtitle: "\u05e4\u05e9\u05d5\u05d8, \u05d1\u05e8\u05d5\u05e8 \u05d5\u05ea\u05de\u05d9\u05d3 \u05e0\u05e8\u05d0\u05d4 \u2014 \u05e0\u05d1\u05e0\u05d4 \u05dc\u05de\u05d9 \u05e9\u05d4\u05db\u05d9 \u05e6\u05e8\u05d9\u05da \u05d0\u05ea \u05d6\u05d4",
+  f1Title: "\u05e0\u05d9\u05d4\u05d5\u05dc \u05de\u05e8\u05d7\u05d5\u05e7", f1Desc: "\u05d4\u05de\u05d8\u05e4\u05dc\u05d9\u05dd \u05de\u05d5\u05e1\u05d9\u05e4\u05d9\u05dd, \u05de\u05e9\u05e0\u05d9\u05dd \u05d0\u05d5 \u05de\u05d5\u05d7\u05e7\u05d9\u05dd \u05d0\u05d9\u05e8\u05d5\u05e2\u05d9\u05dd \u05de\u05d4\u05d8\u05dc\u05e4\u05d5\u05df \u05e9\u05dc\u05d4\u05dd \u05d3\u05e8\u05da Google Calendar.",
+  f2Title: "\u05d4\u05ea\u05e8\u05d0\u05d5\u05ea \u05e7\u05d5\u05dc\u05d9\u05d5\u05ea", f2Desc: "\u05d1\u05d7\u05e8\u05d5 \u05de\u05ea\u05d5\u05da 6 \u05e6\u05dc\u05d9\u05dc\u05d9 \u05d4\u05ea\u05e8\u05d0\u05d4 \u05d0\u05d5 \u05de\u05e6\u05d1 \u05e9\u05e7\u05d8. \u05e7\u05d1\u05dc\u05d5 \u05d4\u05ea\u05e8\u05d0\u05d4 \u05dc\u05e4\u05e0\u05d9 \u05d0\u05d9\u05e8\u05d5\u05e2\u05d9\u05dd.",
+  f3Title: "\u05d8\u05e7\u05e1\u05d8 \u05e2\u05e0\u05e7", f3Desc: "\u05e0\u05d9\u05ea\u05df \u05dc\u05e7\u05e8\u05d9\u05d0\u05d4 \u05de\u05e2\u05d1\u05e8 \u05dc\u05d7\u05d3\u05e8. \u05d2\u05d5\u05d3\u05dc \u05d2\u05d5\u05e4\u05df \u05d5\u05e6\u05d1\u05e2\u05d9\u05dd \u05de\u05ea\u05db\u05d5\u05d5\u05e0\u05e0\u05d9\u05dd.",
+  f4Title: "\u05ea\u05e6\u05d5\u05d2\u05d4 \u05e7\u05d1\u05d5\u05e2\u05d4", f4Desc: "\u05d4\u05de\u05e1\u05da \u05e0\u05e9\u05d0\u05e8 \u05d3\u05dc\u05d5\u05e7 \u05e2\u05dd \u05d4\u05d2\u05e0\u05d4 \u05de\u05e4\u05e0\u05d9 \u05e6\u05e8\u05d9\u05d1\u05d4 \u05dc\u05de\u05e1\u05db\u05d9 OLED \u05d5-AMOLED.",
+  f5Title: "20 \u05e9\u05e4\u05d5\u05ea", f5Desc: "\u05ea\u05de\u05d9\u05db\u05d4 \u05de\u05dc\u05d0\u05d4 \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea, \u05d0\u05e0\u05d2\u05dc\u05d9\u05ea, \u05e2\u05e8\u05d1\u05d9\u05ea, \u05e8\u05d5\u05e1\u05d9\u05ea, \u05e6\u05e8\u05e4\u05ea\u05d9\u05ea, \u05d2\u05e8\u05de\u05e0\u05d9\u05ea, \u05d9\u05e4\u05e0\u05d9\u05ea, \u05e7\u05d5\u05e8\u05d9\u05d0\u05e0\u05d9\u05ea \u05d5\u05e2\u05d5\u05d3.",
+  f6Title: "\u05e4\u05e8\u05d8\u05d9\u05d5\u05ea \u05e7\u05d5\u05d3\u05dd \u05db\u05dc", f6Desc: "\u05d0\u05d9\u05df \u05e0\u05ea\u05d5\u05e0\u05d9\u05dd \u05d1\u05e9\u05e8\u05ea\u05d9\u05dd \u05d7\u05d9\u05e6\u05d5\u05e0\u05d9\u05d9\u05dd. \u05d0\u05d9\u05df \u05e4\u05e8\u05e1\u05d5\u05de\u05d5\u05ea \u05d5\u05d0\u05d9\u05df \u05de\u05e2\u05e7\u05d1.",
+  perfectTitle: "\u05de\u05d5\u05e9\u05dc\u05dd \u05e2\u05d1\u05d5\u05e8", perfectSubtitle: "\u05d1\u05db\u05dc \u05de\u05e7\u05d5\u05dd \u05e9\u05d4\u05d9\u05e7\u05d9\u05e8 \u05e9\u05dc\u05db\u05dd \u05e6\u05e8\u05d9\u05da \u05ea\u05e6\u05d5\u05d2\u05d4 \u05d1\u05e8\u05d5\u05e8\u05d4 \u05e9\u05dc \u05d4\u05d9\u05d5\u05dd",
+  u1Title: "\u05e9\u05d5\u05dc\u05d7\u05df \u05d4\u05de\u05d8\u05d1\u05d7", u1Desc: "\u05dc\u05d5\u05d7 \u05d6\u05de\u05e0\u05d9\u05dd \u05d9\u05d5\u05de\u05d9 \u05e9\u05db\u05dc \u05d4\u05de\u05e9\u05e4\u05d7\u05d4 \u05d9\u05db\u05d5\u05dc\u05d4 \u05dc\u05e8\u05d0\u05d5\u05ea",
+  u2Title: "\u05e9\u05d9\u05d3\u05ea \u05d4\u05dc\u05d9\u05dc\u05d4", u2Desc: "\u05dc\u05d4\u05ea\u05e2\u05d5\u05e8\u05e8 \u05d5\u05dc\u05e8\u05d0\u05d5\u05ea \u05d0\u05ea \u05ea\u05d5\u05db\u05e0\u05d9\u05ea \u05d4\u05d9\u05d5\u05dd \u05e2\u05dd \u05ea\u05d6\u05db\u05d5\u05e8\u05d5\u05ea \u05ea\u05e8\u05d5\u05e4\u05d5\u05ea",
+  u3Title: "\u05d1\u05d9\u05ea \u05d0\u05d1\u05d5\u05ea", u3Desc: "\u05ea\u05e6\u05d5\u05d2\u05d4 \u05e7\u05d9\u05e8\u05d9\u05ea \u05e9\u05de\u05ea\u05e2\u05d3\u05db\u05e0\u05ea \u05e2\u05dc \u05d9\u05d3\u05d9 \u05d4\u05e6\u05d5\u05d5\u05ea \u05d5\u05d4\u05de\u05e9\u05e4\u05d7\u05d4 \u05de\u05db\u05dc \u05de\u05e7\u05d5\u05dd",
+  u4Title: "\u05ea\u05d6\u05db\u05d5\u05e8\u05d5\u05ea \u05ea\u05e8\u05d5\u05e4\u05d5\u05ea", u4Desc: "\u05d4\u05ea\u05e8\u05d0\u05d5\u05ea \u05e7\u05d5\u05dc\u05d9\u05d5\u05ea \u05de\u05d1\u05d8\u05d9\u05d7\u05d5\u05ea \u05e9\u05dc\u05d0 \u05de\u05e4\u05e1\u05e4\u05e1\u05d9\u05dd \u05ea\u05d5\u05e8\u05d9\u05dd \u05d5\u05ea\u05e8\u05d5\u05e4\u05d5\u05ea",
+  howTitle: "\u05d0\u05d9\u05da \u05d6\u05d4 \u05e2\u05d5\u05d1\u05d3", howSubtitle: "\u05e9\u05dc\u05d5\u05e9\u05d4 \u05e6\u05e2\u05d3\u05d9\u05dd \u05e4\u05e9\u05d5\u05d8\u05d9\u05dd",
+  s1Title: "\u05d4\u05ea\u05e7\u05d9\u05e0\u05d5 \u05e2\u05dc \u05d8\u05d0\u05d1\u05dc\u05d8", s1Desc: "\u05d4\u05d5\u05e8\u05d9\u05d3\u05d5 \u05d0\u05ea BestCompanion \u05de-Google Play \u05d5\u05d4\u05ea\u05d7\u05d1\u05e8\u05d5 \u05e2\u05dd \u05d7\u05e9\u05d1\u05d5\u05df Google.",
+  s2Title: "\u05e9\u05ea\u05e4\u05d5 \u05dc\u05d5\u05d7 \u05e9\u05e0\u05d4", s2Desc: "\u05e9\u05ea\u05e4\u05d5 Google Calendar \u05e2\u05dd \u05d7\u05e9\u05d1\u05d5\u05df \u05d4\u05d8\u05d0\u05d1\u05dc\u05d8. \u05d6\u05d4 \u05d4\u05d7\u05d9\u05d1\u05d5\u05e8.",
+  s3Title: "\u05e0\u05d4\u05dc\u05d5 \u05de\u05e8\u05d7\u05d5\u05e7", s3Desc: "\u05d4\u05d5\u05e1\u05d9\u05e4\u05d5 \u05d0\u05d9\u05e8\u05d5\u05e2\u05d9\u05dd \u05de\u05d4\u05d8\u05dc\u05e4\u05d5\u05df \u05d0\u05d5 \u05d4\u05de\u05d7\u05e9\u05d1. \u05d4\u05dd \u05de\u05d5\u05e4\u05d9\u05e2\u05d9\u05dd \u05d1\u05d8\u05d0\u05d1\u05dc\u05d8 \u05ea\u05d5\u05da \u05d3\u05e7\u05d5\u05ea.",
+  langTitle: "\u05de\u05d3\u05d1\u05e8 \u05d1\u05e9\u05e4\u05d4 \u05e9\u05dc\u05da",
+  ctaTitle: "\u05ea\u05e0\u05d5 \u05d1\u05d4\u05d9\u05e8\u05d5\u05ea \u05dc\u05d9\u05e7\u05d9\u05e8\u05db\u05dd",
+  ctaSubtitle: "\u05d1\u05dc\u05d9 \u05e4\u05e8\u05e1\u05d5\u05de\u05d5\u05ea. \u05d1\u05dc\u05d9 \u05d1\u05dc\u05d2\u05df. \u05d1\u05dc\u05d9 \u05ea\u05e4\u05e8\u05d9\u05d8\u05d9\u05dd \u05de\u05e1\u05d5\u05d1\u05db\u05d9\u05dd.\n\u05e8\u05e7 \u05d4\u05de\u05d9\u05d3\u05e2 \u05e9\u05d4\u05dd \u05e6\u05e8\u05d9\u05db\u05d9\u05dd, \u05ea\u05de\u05d9\u05d3 \u05e0\u05e8\u05d0\u05d4.",
+  privacy: "\u05de\u05d3\u05d9\u05e0\u05d9\u05d5\u05ea \u05e4\u05e8\u05d8\u05d9\u05d5\u05ea", contact: "\u05e6\u05d5\u05e8 \u05e7\u05e9\u05e8"
+},
+ar: {
+  _name: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+  _dir: "rtl",
+  tagline: "\u0634\u0627\u0634\u0629 \u062a\u0642\u0648\u064a\u0645 \u062f\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0644\u0631\u0639\u0627\u064a\u0629 \u0643\u0628\u0627\u0631 \u0627\u0644\u0633\u0646 \u0648\u0645\u0631\u0636\u0649 \u0627\u0644\u062e\u0631\u0641",
+  subtitle: "\u0636\u0639\u0647 \u0639\u0644\u0649 \u062c\u0647\u0627\u0632 \u0644\u0648\u062d\u064a \u0648\u0627\u0645\u0646\u062d \u0645\u0646 \u062a\u062d\u0628 \u0631\u0624\u064a\u0629 \u0648\u0627\u0636\u062d\u0629 \u0648\u062b\u0627\u0628\u062a\u0629 \u0644\u0644\u064a\u0648\u0645. \u064a\u062f\u064a\u0631 \u0645\u0642\u062f\u0645\u0648 \u0627\u0644\u0631\u0639\u0627\u064a\u0629 \u0643\u0644 \u0634\u064a\u0621 \u0639\u0646 \u0628\u064f\u0639\u062f \u0639\u0628\u0631 Google Calendar.",
+  cta: "\u062a\u0646\u0632\u064a\u0644 \u0645\u0646 Google Play",
+  featuresTitle: "\u0645\u0635\u0645\u0645 \u0644\u0645\u0627 \u064a\u0647\u0645", featuresSubtitle: "\u0628\u0633\u064a\u0637 \u0648\u0648\u0627\u0636\u062d \u0648\u0645\u0631\u0626\u064a \u062f\u0627\u0626\u0645\u064b\u0627",
+  f1Title: "\u0625\u062f\u0627\u0631\u0629 \u0639\u0646 \u0628\u064f\u0639\u062f", f1Desc: "\u064a\u0636\u064a\u0641 \u0645\u0642\u062f\u0645\u0648 \u0627\u0644\u0631\u0639\u0627\u064a\u0629 \u0627\u0644\u0623\u062d\u062f\u0627\u062b \u0623\u0648 \u064a\u0639\u062f\u0644\u0648\u0646\u0647\u0627 \u0645\u0646 \u0647\u0648\u0627\u062a\u0641\u0647\u0645 \u0639\u0628\u0631 Google Calendar.",
+  f2Title: "\u062a\u0646\u0628\u064a\u0647\u0627\u062a \u0635\u0648\u062a\u064a\u0629", f2Desc: "\u0627\u062e\u062a\u0631 \u0645\u0646 6 \u0623\u0635\u0648\u0627\u062a \u062a\u0646\u0628\u064a\u0647 \u0623\u0648 \u0627\u0644\u0648\u0636\u0639 \u0627\u0644\u0635\u0627\u0645\u062a.",
+  f3Title: "\u0646\u0635 \u0643\u0628\u064a\u0631 \u062c\u062f\u064b\u0627", f3Desc: "\u0645\u0635\u0645\u0645 \u0644\u0644\u0642\u0631\u0627\u0621\u0629 \u0645\u0646 \u0627\u0644\u062c\u0647\u0629 \u0627\u0644\u0623\u062e\u0631\u0649 \u0645\u0646 \u0627\u0644\u063a\u0631\u0641\u0629.",
+  f4Title: "\u0634\u0627\u0634\u0629 \u062f\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644", f4Desc: "\u062a\u0628\u0642\u0649 \u0627\u0644\u0634\u0627\u0634\u0629 \u0645\u0636\u0627\u0621\u0629 \u0628\u0634\u0643\u0644 \u062f\u0627\u0626\u0645 \u0645\u0639 \u062d\u0645\u0627\u064a\u0629 \u0645\u0646 \u0627\u0644\u0627\u062d\u062a\u0631\u0627\u0642.",
+  f5Title: "20 \u0644\u063a\u0629", f5Desc: "\u062f\u0639\u0645 \u0643\u0627\u0645\u0644 \u0644\u0644\u0639\u0631\u0628\u064a\u0629 \u0648\u0627\u0644\u0639\u0628\u0631\u064a\u0629 \u0648\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 \u0648\u063a\u064a\u0631\u0647\u0627.",
+  f6Title: "\u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629 \u0623\u0648\u0644\u0627\u064b", f6Desc: "\u0644\u0627 \u062a\u064f\u062e\u0632\u0651\u0646 \u0628\u064a\u0627\u0646\u0627\u062a \u0639\u0644\u0649 \u062e\u0648\u0627\u062f\u0645 \u062e\u0627\u0631\u062c\u064a\u0629. \u0644\u0627 \u0625\u0639\u0644\u0627\u0646\u0627\u062a \u0648\u0644\u0627 \u062a\u062a\u0628\u0639.",
+  perfectTitle: "\u0645\u062b\u0627\u0644\u064a \u0644\u0640", perfectSubtitle: "\u0623\u064a\u0646\u0645\u0627 \u064a\u062d\u062a\u0627\u062c \u0645\u0646 \u062a\u062d\u0628 \u0625\u0644\u0649 \u0631\u0624\u064a\u0629 \u0648\u0627\u0636\u062d\u0629 \u0644\u0644\u064a\u0648\u0645",
+  u1Title: "\u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0645\u0637\u0628\u062e", u1Desc: "\u062c\u062f\u0648\u0644 \u064a\u0648\u0645\u064a \u064a\u0631\u0627\u0647 \u0643\u0644 \u0623\u0641\u0631\u0627\u062f \u0627\u0644\u0639\u0627\u0626\u0644\u0629",
+  u2Title: "\u0627\u0644\u0645\u0646\u0636\u062f\u0629", u2Desc: "\u0627\u0633\u062a\u064a\u0642\u0638 \u0648\u0634\u0627\u0647\u062f \u062e\u0637\u0629 \u0627\u0644\u064a\u0648\u0645 \u0645\u0639 \u062a\u0630\u0643\u064a\u0631\u0627\u062a \u0627\u0644\u0623\u062f\u0648\u064a\u0629",
+  u3Title: "\u062f\u0627\u0631 \u0627\u0644\u0631\u0639\u0627\u064a\u0629", u3Desc: "\u0634\u0627\u0634\u0629 \u062d\u0627\u0626\u0637\u064a\u0629 \u064a\u062d\u062f\u0651\u062b\u0647\u0627 \u0627\u0644\u0645\u0648\u0638\u0641\u0648\u0646 \u0648\u0627\u0644\u0639\u0627\u0626\u0644\u0629",
+  u4Title: "\u062a\u0630\u0643\u064a\u0631\u0627\u062a \u0627\u0644\u0623\u062f\u0648\u064a\u0629", u4Desc: "\u062a\u0636\u0645\u0646 \u0627\u0644\u062a\u0646\u0628\u064a\u0647\u0627\u062a \u0627\u0644\u0635\u0648\u062a\u064a\u0629 \u0639\u062f\u0645 \u062a\u0641\u0648\u064a\u062a \u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f",
+  howTitle: "\u0643\u064a\u0641 \u064a\u0639\u0645\u0644", howSubtitle: "\u062b\u0644\u0627\u062b \u062e\u0637\u0648\u0627\u062a \u0628\u0633\u064a\u0637\u0629",
+  s1Title: "\u062b\u0628\u0651\u062a \u0639\u0644\u0649 \u062c\u0647\u0627\u0632 \u0644\u0648\u062d\u064a", s1Desc: "\u062d\u0645\u0651\u0644 BestCompanion \u0645\u0646 Google Play \u0648\u0633\u062c\u0651\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0628\u062d\u0633\u0627\u0628 Google.",
+  s2Title: "\u0634\u0627\u0631\u0643 \u062a\u0642\u0648\u064a\u0645\u064b\u0627", s2Desc: "\u0634\u0627\u0631\u0643 Google Calendar \u0645\u0639 \u062d\u0633\u0627\u0628 \u0627\u0644\u062c\u0647\u0627\u0632 \u0627\u0644\u0644\u0648\u062d\u064a.",
+  s3Title: "\u0623\u062f\u0631 \u0639\u0646 \u0628\u064f\u0639\u062f", s3Desc: "\u0623\u0636\u0641 \u0623\u062d\u062f\u0627\u062b\u064b\u0627 \u0645\u0646 \u0647\u0627\u062a\u0641\u0643 \u0623\u0648 \u062d\u0627\u0633\u0648\u0628\u0643. \u062a\u0638\u0647\u0631 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632 \u062e\u0644\u0627\u0644 \u062f\u0642\u0627\u0626\u0642.",
+  langTitle: "\u064a\u062a\u062d\u062f\u062b \u0644\u063a\u062a\u0643",
+  ctaTitle: "\u0627\u0645\u0646\u062d \u0645\u0646 \u062a\u062d\u0628 \u0627\u0644\u0648\u0636\u0648\u062d",
+  ctaSubtitle: "\u0628\u062f\u0648\u0646 \u0625\u0639\u0644\u0627\u0646\u0627\u062a. \u0628\u062f\u0648\u0646 \u0641\u0648\u0636\u0649. \u0628\u062f\u0648\u0646 \u0642\u0648\u0627\u0626\u0645 \u0645\u0639\u0642\u062f\u0629.\n\u0641\u0642\u0637 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u062a\u064a \u064a\u062d\u062a\u0627\u062c\u0648\u0646\u0647\u0627\u060c \u0645\u0631\u0626\u064a\u0629 \u062f\u0627\u0626\u0645\u064b\u0627.",
+  privacy: "\u0633\u064a\u0627\u0633\u0629 \u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629", contact: "\u0627\u062a\u0635\u0644 \u0628\u0646\u0627"
+},
+ru: { _name: "\u0420\u0443\u0441\u0441\u043a\u0438\u0439", tagline: "\u041f\u043e\u0441\u0442\u043e\u044f\u043d\u043d\u044b\u0439 \u043a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c \u0434\u043b\u044f \u0443\u0445\u043e\u0434\u0430 \u0437\u0430 \u043f\u043e\u0436\u0438\u043b\u044b\u043c\u0438 \u0438 \u043b\u044e\u0434\u044c\u043c\u0438 \u0441 \u0434\u0435\u043c\u0435\u043d\u0446\u0438\u0435\u0439", subtitle: "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0435 \u043d\u0430 \u043f\u043b\u0430\u043d\u0448\u0435\u0442 \u0438 \u0434\u0430\u0439\u0442\u0435 \u0431\u043b\u0438\u0437\u043a\u043e\u043c\u0443 \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u0443 \u044f\u0441\u043d\u044b\u0439 \u043e\u0431\u0437\u043e\u0440 \u0434\u043d\u044f. \u0423\u0445\u0430\u0436\u0438\u0432\u0430\u044e\u0449\u0438\u0435 \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u044e\u0442 \u0432\u0441\u0435\u043c \u0443\u0434\u0430\u043b\u0451\u043d\u043d\u043e \u0447\u0435\u0440\u0435\u0437 Google Calendar.", cta: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0432 Google Play", featuresTitle: "\u0421\u043e\u0437\u0434\u0430\u043d\u043e \u0434\u043b\u044f \u0432\u0430\u0436\u043d\u043e\u0433\u043e", featuresSubtitle: "\u041f\u0440\u043e\u0441\u0442\u043e, \u044f\u0441\u043d\u043e \u0438 \u0432\u0441\u0435\u0433\u0434\u0430 \u0432\u0438\u0434\u043d\u043e", f1Title: "\u0423\u0434\u0430\u043b\u0451\u043d\u043d\u043e\u0435 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435", f1Desc: "\u0423\u0445\u0430\u0436\u0438\u0432\u0430\u044e\u0449\u0438\u0435 \u0434\u043e\u0431\u0430\u0432\u043b\u044f\u044e\u0442 \u0441\u043e\u0431\u044b\u0442\u0438\u044f \u0441\u043e \u0441\u0432\u043e\u0435\u0433\u043e \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430 \u0447\u0435\u0440\u0435\u0437 Google Calendar.", f2Title: "\u0417\u0432\u0443\u043a\u043e\u0432\u044b\u0435 \u043e\u043f\u043e\u0432\u0435\u0449\u0435\u043d\u0438\u044f", f2Desc: "6 \u0437\u0432\u0443\u043a\u043e\u0432 \u0431\u0443\u0434\u0438\u043b\u044c\u043d\u0438\u043a\u0430 \u0438\u043b\u0438 \u0431\u0435\u0437\u0437\u0432\u0443\u0447\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c. \u041e\u043f\u043e\u0432\u0435\u0449\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0434 \u0441\u043e\u0431\u044b\u0442\u0438\u044f\u043c\u0438.", f3Title: "\u041e\u0447\u0435\u043d\u044c \u043a\u0440\u0443\u043f\u043d\u044b\u0439 \u0442\u0435\u043a\u0441\u0442", f3Desc: "\u0427\u0438\u0442\u0430\u0435\u0442\u0441\u044f \u0441 \u0434\u0440\u0443\u0433\u043e\u0433\u043e \u043a\u043e\u043d\u0446\u0430 \u043a\u043e\u043c\u043d\u0430\u0442\u044b. \u041d\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0435\u043c\u044b\u0435 \u0448\u0440\u0438\u0444\u0442\u044b \u0438 \u0446\u0432\u0435\u0442\u0430.", f4Title: "\u041f\u043e\u0441\u0442\u043e\u044f\u043d\u043d\u044b\u0439 \u044d\u043a\u0440\u0430\u043d", f4Desc: "\u042d\u043a\u0440\u0430\u043d \u0432\u0441\u0435\u0433\u0434\u0430 \u0432\u043a\u043b\u044e\u0447\u0451\u043d \u0441 \u0437\u0430\u0449\u0438\u0442\u043e\u0439 \u043e\u0442 \u0432\u044b\u0433\u043e\u0440\u0430\u043d\u0438\u044f OLED.", f5Title: "20 \u044f\u0437\u044b\u043a\u043e\u0432", f5Desc: "\u041f\u043e\u043b\u043d\u0430\u044f \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430 \u0440\u0443\u0441\u0441\u043a\u043e\u0433\u043e, \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u043e\u0433\u043e, \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u043e\u0433\u043e \u0438 \u0434\u0440\u0443\u0433\u0438\u0445.", f6Title: "\u041a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", f6Desc: "\u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0434\u0430\u043d\u043d\u044b\u0445 \u043d\u0430 \u0432\u043d\u0435\u0448\u043d\u0438\u0445 \u0441\u0435\u0440\u0432\u0435\u0440\u0430\u0445. \u0411\u0435\u0437 \u0440\u0435\u043a\u043b\u0430\u043c\u044b \u0438 \u043e\u0442\u0441\u043b\u0435\u0436\u0438\u0432\u0430\u043d\u0438\u044f.", perfectTitle: "\u0418\u0434\u0435\u0430\u043b\u044c\u043d\u043e \u0434\u043b\u044f", perfectSubtitle: "\u0412\u0435\u0437\u0434\u0435, \u0433\u0434\u0435 \u043d\u0443\u0436\u0435\u043d \u044f\u0441\u043d\u044b\u0439 \u043e\u0431\u0437\u043e\u0440 \u0434\u043d\u044f", u1Title: "\u041a\u0443\u0445\u043e\u043d\u043d\u044b\u0439 \u0441\u0442\u043e\u043b", u1Desc: "\u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0434\u043d\u044f \u0434\u043b\u044f \u0432\u0441\u0435\u0439 \u0441\u0435\u043c\u044c\u0438", u2Title: "\u041f\u0440\u0438\u043a\u0440\u043e\u0432\u0430\u0442\u043d\u044b\u0439", u2Desc: "\u041f\u0440\u043e\u0441\u043d\u0443\u0442\u044c\u0441\u044f \u0438 \u0443\u0432\u0438\u0434\u0435\u0442\u044c \u043f\u043b\u0430\u043d \u0434\u043d\u044f \u0441 \u043d\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u043d\u0438\u044f\u043c\u0438 \u043e \u043b\u0435\u043a\u0430\u0440\u0441\u0442\u0432\u0430\u0445", u3Title: "\u0414\u043e\u043c \u043f\u0440\u0435\u0441\u0442\u0430\u0440\u0435\u043b\u044b\u0445", u3Desc: "\u041d\u0430\u0441\u0442\u0435\u043d\u043d\u044b\u0439 \u0434\u0438\u0441\u043f\u043b\u0435\u0439, \u043e\u0431\u043d\u043e\u0432\u043b\u044f\u0435\u043c\u044b\u0439 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u043e\u043c \u0438 \u0441\u0435\u043c\u044c\u0451\u0439", u4Title: "\u041d\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u043d\u0438\u044f \u043e \u043b\u0435\u043a\u0430\u0440\u0441\u0442\u0432\u0430\u0445", u4Desc: "\u0417\u0432\u0443\u043a\u043e\u0432\u044b\u0435 \u043e\u043f\u043e\u0432\u0435\u0449\u0435\u043d\u0438\u044f \u043d\u0435 \u043f\u043e\u0437\u0432\u043e\u043b\u044f\u0442 \u043f\u0440\u043e\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u043f\u0440\u0438\u0451\u043c \u043b\u0435\u043a\u0430\u0440\u0441\u0442\u0432", howTitle: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", howSubtitle: "\u0422\u0440\u0438 \u043f\u0440\u043e\u0441\u0442\u044b\u0445 \u0448\u0430\u0433\u0430", s1Title: "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0435 \u043d\u0430 \u043f\u043b\u0430\u043d\u0448\u0435\u0442", s1Desc: "\u0421\u043a\u0430\u0447\u0430\u0439\u0442\u0435 BestCompanion \u0438\u0437 Google Play \u0438 \u0432\u043e\u0439\u0434\u0438\u0442\u0435 \u0441 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u043e\u043c Google.", s2Title: "\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c \u043a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u0451\u043c", s2Desc: "\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c Google Calendar \u0441 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u043e\u043c \u043f\u043b\u0430\u043d\u0448\u0435\u0442\u0430.", s3Title: "\u0423\u043f\u0440\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0443\u0434\u0430\u043b\u0451\u043d\u043d\u043e", s3Desc: "\u0414\u043e\u0431\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0441\u043e\u0431\u044b\u0442\u0438\u044f \u0441 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430 \u0438\u043b\u0438 \u043a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u0430. \u041e\u043d\u0438 \u043f\u043e\u044f\u0432\u044f\u0442\u0441\u044f \u043d\u0430 \u043f\u043b\u0430\u043d\u0448\u0435\u0442\u0435 \u0437\u0430 \u043c\u0438\u043d\u0443\u0442\u044b.", langTitle: "\u0413\u043e\u0432\u043e\u0440\u0438\u0442 \u043d\u0430 \u0432\u0430\u0448\u0435\u043c \u044f\u0437\u044b\u043a\u0435", ctaTitle: "\u041f\u043e\u0434\u0430\u0440\u0438\u0442\u0435 \u044f\u0441\u043d\u043e\u0441\u0442\u044c \u0431\u043b\u0438\u0437\u043a\u043e\u043c\u0443", ctaSubtitle: "\u0411\u0435\u0437 \u0440\u0435\u043a\u043b\u0430\u043c\u044b. \u0411\u0435\u0437 \u0431\u0435\u0441\u043f\u043e\u0440\u044f\u0434\u043a\u0430. \u0411\u0435\u0437 \u0441\u043b\u043e\u0436\u043d\u044b\u0445 \u043c\u0435\u043d\u044e.\n\u0422\u043e\u043b\u044c\u043a\u043e \u043d\u0443\u0436\u043d\u0430\u044f \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f, \u0432\u0441\u0435\u0433\u0434\u0430 \u0432\u0438\u0434\u043d\u0430.", privacy: "\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", contact: "\u041a\u043e\u043d\u0442\u0430\u043a\u0442" },
+it: { _name: "Italiano", tagline: "Display calendario sempre attivo per l\u2019assistenza a anziani e persone con demenza", subtitle: "Posizionalo su un tablet e offri al tuo caro una visione chiara della giornata. I caregiver gestiscono tutto a distanza tramite Google Calendar.", cta: "Scarica da Google Play", featuresTitle: "Progettato per ci\u00f2 che conta", featuresSubtitle: "Semplice, chiaro e sempre visibile", f1Title: "Gestione remota", f1Desc: "I caregiver aggiungono o modificano eventi dal proprio telefono tramite Google Calendar.", f2Title: "Avvisi sonori", f2Desc: "Scegli tra 6 suoni di allarme o modalit\u00e0 silenziosa.", f3Title: "Testo extra grande", f3Desc: "Leggibile dall\u2019altra parte della stanza. Dimensioni e colori personalizzabili.", f4Title: "Display sempre acceso", f4Desc: "Lo schermo resta acceso con protezione anti burn-in per schermi OLED e AMOLED.", f5Title: "20 lingue", f5Desc: "Supporto completo per italiano, inglese, spagnolo, francese, tedesco e altre.", f6Title: "Privacy prima di tutto", f6Desc: "Nessun dato su server esterni. Nessuna pubblicit\u00e0 n\u00e9 tracciamento.", perfectTitle: "Perfetto per", perfectSubtitle: "Ovunque il tuo caro abbia bisogno di chiarezza", u1Title: "Tavolo da cucina", u1Desc: "Un programma giornaliero visibile a tutta la famiglia", u2Title: "Comodino", u2Desc: "Svegliati e vedi il programma con i promemoria dei farmaci", u3Title: "Casa di cura", u3Desc: "Display a parete aggiornato dal personale e dalla famiglia", u4Title: "Promemoria farmaci", u4Desc: "Gli avvisi sonori garantiscono che non si perdano appuntamenti", howTitle: "Come funziona", howSubtitle: "Tre semplici passaggi", s1Title: "Installa su un tablet", s1Desc: "Scarica BestCompanion da Google Play e accedi con un account Google.", s2Title: "Condividi un calendario", s2Desc: "Condividi un Google Calendar con l\u2019account del tablet.", s3Title: "Gestisci a distanza", s3Desc: "Aggiungi eventi dal telefono o computer. Appaiono sul tablet in pochi minuti.", langTitle: "Parla la tua lingua", ctaTitle: "Regala chiarezza al tuo caro", ctaSubtitle: "Nessuna pubblicit\u00e0. Nessun disordine. Nessun menu complicato.\nSolo le informazioni necessarie, sempre visibili.", privacy: "Informativa sulla privacy", contact: "Contatti" },
+pt: { _name: "Portugu\u00eas", tagline: "Ecr\u00e3 de calend\u00e1rio sempre ativo para cuidados a idosos e dem\u00eancia", subtitle: "Coloque num tablet e ofere\u00e7a ao seu ente querido uma vis\u00e3o clara do dia. Os cuidadores gerem tudo remotamente atrav\u00e9s do Google Calendar.", cta: "Obter no Google Play", featuresTitle: "Concebido para o que importa", featuresSubtitle: "Simples, claro e sempre vis\u00edvel", f1Title: "Gest\u00e3o remota", f1Desc: "Os cuidadores adicionam ou alteram eventos a partir do seu pr\u00f3prio telefone via Google Calendar.", f2Title: "Alertas sonoros", f2Desc: "Escolha entre 6 tons de alarme ou modo silencioso.", f3Title: "Texto extra grande", f3Desc: "Leg\u00edvel do outro lado da sala. Tamanhos e cores personaliz\u00e1veis.", f4Title: "Ecr\u00e3 sempre ligado", f4Desc: "O ecr\u00e3 permanece ligado com prote\u00e7\u00e3o anti queimadura para ecr\u00e3s OLED e AMOLED.", f5Title: "20 idiomas", f5Desc: "Suporte completo para portugu\u00eas, ingl\u00eas, espanhol, franc\u00eas, alem\u00e3o e mais.", f6Title: "Privacidade primeiro", f6Desc: "Sem dados em servidores externos. Sem an\u00fancios nem rastreamento.", perfectTitle: "Perfeito para", perfectSubtitle: "Onde o seu ente querido precisar de clareza", u1Title: "Mesa da cozinha", u1Desc: "Um hor\u00e1rio di\u00e1rio vis\u00edvel para toda a fam\u00edlia", u2Title: "Mesa de cabeceira", u2Desc: "Acordar e ver o plano do dia com lembretes de medica\u00e7\u00e3o", u3Title: "Lar de idosos", u3Desc: "Ecr\u00e3 de parede atualizado pela equipa e fam\u00edlia", u4Title: "Lembretes de medica\u00e7\u00e3o", u4Desc: "Os alertas sonoros garantem que nenhuma consulta \u00e9 perdida", howTitle: "Como funciona", howSubtitle: "Tr\u00eas passos simples", s1Title: "Instalar num tablet", s1Desc: "Descarregue o BestCompanion do Google Play e inicie sess\u00e3o com uma conta Google.", s2Title: "Partilhar um calend\u00e1rio", s2Desc: "Partilhe um Google Calendar com a conta do tablet.", s3Title: "Gerir \u00e0 dist\u00e2ncia", s3Desc: "Adicione eventos do seu telefone ou computador. Aparecem no tablet em minutos.", langTitle: "Fala a sua l\u00edngua", ctaTitle: "D\u00ea clareza ao seu ente querido", ctaSubtitle: "Sem an\u00fancios. Sem desordem. Sem menus complicados.\nApenas a informa\u00e7\u00e3o necess\u00e1ria, sempre vis\u00edvel.", privacy: "Pol\u00edtica de privacidade", contact: "Contacto" },
+ja: { _name: "\u65e5\u672c\u8a9e", tagline: "\u8a8d\u77e5\u75c7\u30fb\u9ad8\u9f62\u8005\u30b1\u30a2\u306e\u305f\u3081\u306e\u5e38\u6642\u8868\u793a\u30ab\u30ec\u30f3\u30c0\u30fc", subtitle: "\u30bf\u30d6\u30ec\u30c3\u30c8\u306b\u7f6e\u3044\u3066\u3001\u5927\u5207\u306a\u4eba\u306b\u4e00\u65e5\u306e\u660e\u78ba\u306a\u898b\u901a\u3057\u3092\u3002\u4ecb\u8b77\u8005\u306fGoogle\u30ab\u30ec\u30f3\u30c0\u30fc\u3067\u9060\u9694\u7ba1\u7406\u3002", cta: "Google Play\u3067\u5165\u624b", featuresTitle: "\u5927\u5207\u306a\u3053\u3068\u306e\u305f\u3081\u306b", featuresSubtitle: "\u30b7\u30f3\u30d7\u30eb\u3067\u660e\u78ba\u3001\u5e38\u306b\u898b\u3048\u308b", f1Title: "\u9060\u9694\u7ba1\u7406", f1Desc: "\u4ecb\u8b77\u8005\u304c\u81ea\u5206\u306e\u643a\u5e2f\u304b\u3089Google\u30ab\u30ec\u30f3\u30c0\u30fc\u3067\u4e88\u5b9a\u3092\u8ffd\u52a0\u30fb\u5909\u66f4\u3002", f2Title: "\u97f3\u58f0\u30a2\u30e9\u30fc\u30c8", f2Desc: "6\u7a2e\u985e\u306e\u30a2\u30e9\u30fc\u30e0\u97f3\u307e\u305f\u306f\u30b5\u30a4\u30ec\u30f3\u30c8\u30e2\u30fc\u30c9\u304b\u3089\u9078\u629e\u3002", f3Title: "\u7279\u5927\u30c6\u30ad\u30b9\u30c8", f3Desc: "\u90e8\u5c4b\u306e\u5411\u3053\u3046\u304b\u3089\u8aad\u3081\u308b\u30b5\u30a4\u30ba\u3002\u30d5\u30a9\u30f3\u30c8\u3068\u8272\u3092\u30ab\u30b9\u30bf\u30de\u30a4\u30ba\u3002", f4Title: "\u5e38\u6642\u8868\u793a", f4Desc: "OLED\u30fbAMOLED\u753b\u9762\u306e\u713c\u304d\u4ed8\u304d\u9632\u6b62\u6a5f\u80fd\u4ed8\u304d\u3002", f5Title: "20\u8a00\u8a9e\u5bfe\u5fdc", f5Desc: "\u65e5\u672c\u8a9e\u3001\u82f1\u8a9e\u3001\u30b9\u30da\u30a4\u30f3\u8a9e\u3001\u30d5\u30e9\u30f3\u30b9\u8a9e\u306a\u3069\u5b8c\u5168\u5bfe\u5fdc\u3002", f6Title: "\u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u512a\u5148", f6Desc: "\u5916\u90e8\u30b5\u30fc\u30d0\u30fc\u306b\u30c7\u30fc\u30bf\u4fdd\u5b58\u306a\u3057\u3002\u5e83\u544a\u30fb\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u306a\u3057\u3002", perfectTitle: "\u3053\u3093\u306a\u5834\u6240\u306b\u6700\u9069", perfectSubtitle: "\u5927\u5207\u306a\u4eba\u306b\u660e\u78ba\u306a\u4e00\u65e5\u3092", u1Title: "\u30ad\u30c3\u30c1\u30f3\u30c6\u30fc\u30d6\u30eb", u1Desc: "\u5bb6\u65cf\u5168\u54e1\u304c\u898b\u3089\u308c\u308b\u65e5\u8ab2", u2Title: "\u30d9\u30c3\u30c9\u30b5\u30a4\u30c9", u2Desc: "\u8d77\u304d\u305f\u3089\u85ac\u306e\u30ea\u30de\u30a4\u30f3\u30c0\u30fc\u3068\u4e00\u65e5\u306e\u4e88\u5b9a\u304c\u898b\u3048\u308b", u3Title: "\u4ecb\u8b77\u65bd\u8a2d", u3Desc: "\u30b9\u30bf\u30c3\u30d5\u3068\u5bb6\u65cf\u304c\u9060\u9694\u3067\u66f4\u65b0\u3059\u308b\u58c1\u639b\u3051\u30c7\u30a3\u30b9\u30d7\u30ec\u30a4", u4Title: "\u670d\u85ac\u30ea\u30de\u30a4\u30f3\u30c0\u30fc", u4Desc: "\u97f3\u58f0\u30a2\u30e9\u30fc\u30c8\u3067\u4e88\u5b9a\u3084\u85ac\u3092\u898b\u9003\u3055\u306a\u3044", howTitle: "\u4f7f\u3044\u65b9", howSubtitle: "3\u3064\u306e\u7c21\u5358\u306a\u30b9\u30c6\u30c3\u30d7", s1Title: "\u30bf\u30d6\u30ec\u30c3\u30c8\u306b\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", s1Desc: "Google Play\u304b\u3089BestCompanion\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u3066Google\u30a2\u30ab\u30a6\u30f3\u30c8\u3067\u30ed\u30b0\u30a4\u30f3\u3002", s2Title: "\u30ab\u30ec\u30f3\u30c0\u30fc\u3092\u5171\u6709", s2Desc: "\u30bf\u30d6\u30ec\u30c3\u30c8\u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u3068Google\u30ab\u30ec\u30f3\u30c0\u30fc\u3092\u5171\u6709\u3002", s3Title: "\u9060\u9694\u3067\u7ba1\u7406", s3Desc: "\u643a\u5e2f\u3084\u30d1\u30bd\u30b3\u30f3\u304b\u3089\u4e88\u5b9a\u3092\u8ffd\u52a0\u3002\u6570\u5206\u3067\u30bf\u30d6\u30ec\u30c3\u30c8\u306b\u8868\u793a\u3002", langTitle: "\u3042\u306a\u305f\u306e\u8a00\u8a9e\u3067", ctaTitle: "\u5927\u5207\u306a\u4eba\u306b\u660e\u78ba\u3055\u3092", ctaSubtitle: "\u5e83\u544a\u306a\u3057\u3002\u96d1\u7136\u306a\u3057\u3002\u8907\u96d1\u306a\u30e1\u30cb\u30e5\u30fc\u306a\u3057\u3002\n\u5fc5\u8981\u306a\u60c5\u5831\u3060\u3051\u3001\u5e38\u306b\u898b\u3048\u308b\u3002", privacy: "\u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u30dd\u30ea\u30b7\u30fc", contact: "\u304a\u554f\u3044\u5408\u308f\u305b" },
+ko: { _name: "\ud55c\uad6d\uc5b4", tagline: "\uce58\ub9e4 \ubc0f \ub178\uc778 \ucf00\uc5b4\ub97c \uc704\ud55c \uc0c1\uc2dc \uce98\ub9b0\ub354 \ub514\uc2a4\ud50c\ub808\uc774", subtitle: "\ud0dc\ube14\ub9bf\uc5d0 \uc124\uce58\ud558\uace0 \uc0ac\ub791\ud558\ub294 \uc0ac\ub78c\uc5d0\uac8c \ud558\ub8e8\uc758 \uba85\ud655\ud55c \ubcf4\uae30\ub97c \uc81c\uacf5\ud558\uc138\uc694. \uac04\ubcd1\uc778\uc774 Google \uce98\ub9b0\ub354\ub85c \uc6d0\uaca9 \uad00\ub9ac\ud569\ub2c8\ub2e4.", cta: "Google Play\uc5d0\uc11c \ub2e4\uc6b4\ub85c\ub4dc", featuresTitle: "\uc911\uc694\ud55c \uac83\uc744 \uc704\ud574 \uc124\uacc4", featuresSubtitle: "\uac04\ub2e8\ud558\uace0 \uba85\ud655\ud558\uba70 \ud56d\uc0c1 \ubcf4\uc785\ub2c8\ub2e4", f1Title: "\uc6d0\uaca9 \uad00\ub9ac", f1Desc: "\uac04\ubcd1\uc778\uc774 Google \uce98\ub9b0\ub354\ub85c \uc77c\uc815\uc744 \ucd94\uac00\ud558\uac70\ub098 \ubcc0\uacbd\ud569\ub2c8\ub2e4.", f2Title: "\uc18c\ub9ac \uc54c\ub9bc", f2Desc: "6\uac00\uc9c0 \uc54c\ub78c\uc74c \ub610\ub294 \ubb34\uc74c \ubaa8\ub4dc\uc5d0\uc11c \uc120\ud0dd\ud558\uc138\uc694.", f3Title: "\ucd08\ub300\ud615 \ud14d\uc2a4\ud2b8", f3Desc: "\ubc29 \uac74\ub108\ud3b8\uc5d0\uc11c \uc77d\uc744 \uc218 \uc788\ub294 \ud06c\uae30. \uae00\uaf34\uacfc \uc0c9\uc0c1 \ub9de\ucda4 \uc124\uc815.", f4Title: "\ud56d\uc0c1 \ucf1c\uc9c4 \ud654\uba74", f4Desc: "OLED \ubc0f AMOLED \ud654\uba74 \ubc88\uc778 \ubc29\uc9c0 \uae30\ub2a5 \ud0d1\uc7ac.", f5Title: "20\uac1c \uc5b8\uc5b4", f5Desc: "\ud55c\uad6d\uc5b4, \uc601\uc5b4, \uc2a4\ud398\uc778\uc5b4, \ud504\ub791\uc2a4\uc5b4 \ub4f1 \uc644\ubcbd \uc9c0\uc6d0.", f6Title: "\uac1c\uc778\uc815\ubcf4 \ubcf4\ud638", f6Desc: "\uc678\ubd80 \uc11c\ubc84\uc5d0 \ub370\uc774\ud130 \uc800\uc7a5 \uc5c6\uc74c. \uad11\uace0\uc640 \ucd94\uc801 \uc5c6\uc74c.", perfectTitle: "\uc774\ub7f0 \uacf3\uc5d0 \uc644\ubcbd", perfectSubtitle: "\uc0ac\ub791\ud558\ub294 \uc0ac\ub78c\uc5d0\uac8c \uba85\ud655\ud55c \ud558\ub8e8\ub97c", u1Title: "\uc8fc\ubc29 \ud14c\uc774\ube14", u1Desc: "\uc628 \uac00\uc871\uc774 \ubcfc \uc218 \uc788\ub294 \uc77c\uc77c \uc77c\uc815", u2Title: "\uce68\ub300 \uc606", u2Desc: "\uc77c\uc5b4\ub098\uc11c \uc57d \ubcf5\uc6a9 \uc54c\ub9bc\uacfc \ud558\ub8e8 \uacc4\ud68d\uc744 \ud655\uc778", u3Title: "\uc694\uc591\uc6d0", u3Desc: "\uc9c1\uc6d0\uacfc \uac00\uc871\uc774 \uc6d0\uaca9\uc73c\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\ub294 \ubcbd\uac78\uc774 \ub514\uc2a4\ud50c\ub808\uc774", u4Title: "\uc57d \ubcf5\uc6a9 \uc54c\ub9bc", u4Desc: "\uc18c\ub9ac \uc54c\ub9bc\uc73c\ub85c \uc608\uc57d\uacfc \uc57d\uc744 \ub193\uce58\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4", howTitle: "\uc0ac\uc6a9 \ubc29\ubc95", howSubtitle: "\uac04\ub2e8\ud55c 3\ub2e8\uacc4", s1Title: "\ud0dc\ube14\ub9bf\uc5d0 \uc124\uce58", s1Desc: "Google Play\uc5d0\uc11c BestCompanion\uc744 \ub2e4\uc6b4\ub85c\ub4dc\ud558\uace0 Google \uacc4\uc815\uc73c\ub85c \ub85c\uadf8\uc778.", s2Title: "\uce98\ub9b0\ub354 \uacf5\uc720", s2Desc: "\ud0dc\ube14\ub9bf \uacc4\uc815\uacfc Google \uce98\ub9b0\ub354\ub97c \uacf5\uc720\ud558\uc138\uc694.", s3Title: "\uc6d0\uaca9 \uad00\ub9ac", s3Desc: "\ud734\ub300\ud3f0\uc774\ub098 \ucef4\ud4e8\ud130\uc5d0\uc11c \uc77c\uc815\uc744 \ucd94\uac00\ud558\uba74 \uba87 \ubd84 \ub0b4 \ud0dc\ube14\ub9bf\uc5d0 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", langTitle: "\ub2f9\uc2e0\uc758 \uc5b8\uc5b4\ub85c", ctaTitle: "\uc0ac\ub791\ud558\ub294 \uc0ac\ub78c\uc5d0\uac8c \uba85\ud655\ud568\uc744", ctaSubtitle: "\uad11\uace0 \uc5c6\uc74c. \uc5b4\uc218\uc120\ud568 \uc5c6\uc74c. \ubcf5\uc7a1\ud55c \uba54\ub274 \uc5c6\uc74c.\n\ud544\uc694\ud55c \uc815\ubcf4\ub9cc, \ud56d\uc0c1 \ubcf4\uc785\ub2c8\ub2e4.", privacy: "\uac1c\uc778\uc815\ubcf4 \ubcf4\ud638\uc815\ucc45", contact: "\uc5f0\ub77d\ucc98" },
+zh: { _name: "\u4e2d\u6587", tagline: "\u4e3a\u8001\u5e74\u4eba\u548c\u75f4\u5446\u75c7\u62a4\u7406\u8bbe\u8ba1\u7684\u5e38\u4eae\u65e5\u5386\u663e\u793a", subtitle: "\u5c06\u5176\u653e\u5728\u5e73\u677f\u7535\u8111\u4e0a\uff0c\u8ba9\u60a8\u7684\u4eb2\u4eba\u6e05\u6670\u5730\u770b\u5230\u4eca\u5929\u7684\u5b89\u6392\u3002\u62a4\u7406\u4eba\u5458\u901a\u8fc7Google\u65e5\u5386\u8fdc\u7a0b\u7ba1\u7406\u4e00\u5207\u3002", cta: "\u5728Google Play\u4e0b\u8f7d", featuresTitle: "\u4e3a\u91cd\u8981\u7684\u4e8b\u800c\u8bbe\u8ba1", featuresSubtitle: "\u7b80\u5355\u3001\u6e05\u6670\u3001\u59cb\u7ec8\u53ef\u89c1", f1Title: "\u8fdc\u7a0b\u7ba1\u7406", f1Desc: "\u62a4\u7406\u4eba\u5458\u901a\u8fc7Google\u65e5\u5386\u4ece\u81ea\u5df1\u7684\u624b\u673a\u6dfb\u52a0\u6216\u4fee\u6539\u4e8b\u4ef6\u3002", f2Title: "\u58f0\u97f3\u63d0\u9192", f2Desc: "\u53ef\u9009\u62e96\u79cd\u95f9\u94c3\u58f0\u6216\u9759\u97f3\u6a21\u5f0f\u3002", f3Title: "\u8d85\u5927\u5b57\u4f53", f3Desc: "\u4ece\u623f\u95f4\u5bf9\u9762\u4e5f\u80fd\u8bfb\u53d6\u3002\u53ef\u8c03\u8282\u5b57\u4f53\u548c\u989c\u8272\u3002", f4Title: "\u5e38\u4eae\u663e\u793a", f4Desc: "\u5c4f\u5e55\u6c38\u4e45\u5f00\u542f\uff0c\u5e26\u6709OLED/AMOLED\u70e7\u5c4f\u4fdd\u62a4\u3002", f5Title: "20\u79cd\u8bed\u8a00", f5Desc: "\u5b8c\u5168\u652f\u6301\u4e2d\u6587\u3001\u82f1\u6587\u3001\u897f\u73ed\u7259\u6587\u3001\u6cd5\u6587\u7b49\u3002", f6Title: "\u9690\u79c1\u4f18\u5148", f6Desc: "\u4e0d\u5728\u5916\u90e8\u670d\u52a1\u5668\u5b58\u50a8\u6570\u636e\u3002\u65e0\u5e7f\u544a\u65e0\u8ddf\u8e2a\u3002", perfectTitle: "\u9002\u5408", perfectSubtitle: "\u60a8\u7684\u4eb2\u4eba\u9700\u8981\u6e05\u6670\u4e86\u89e3\u4e00\u5929\u7684\u5730\u65b9", u1Title: "\u53a8\u623f\u684c\u5b50", u1Desc: "\u5168\u5bb6\u90fd\u80fd\u770b\u5230\u7684\u65e5\u7a0b\u8868", u2Title: "\u5e8a\u5934\u67dc", u2Desc: "\u9192\u6765\u5c31\u80fd\u770b\u5230\u5f53\u5929\u8ba1\u5212\u548c\u7528\u836f\u63d0\u9192", u3Title: "\u517b\u8001\u9662", u3Desc: "\u5de5\u4f5c\u4eba\u5458\u548c\u5bb6\u4eba\u8fdc\u7a0b\u66f4\u65b0\u7684\u58c1\u6302\u663e\u793a\u5c4f", u4Title: "\u7528\u836f\u63d0\u9192", u4Desc: "\u58f0\u97f3\u63d0\u9192\u786e\u4fdd\u4e0d\u4f1a\u9519\u8fc7\u9884\u7ea6\u548c\u7528\u836f", howTitle: "\u5982\u4f55\u4f7f\u7528", howSubtitle: "\u4e09\u4e2a\u7b80\u5355\u6b65\u9aa4", s1Title: "\u5b89\u88c5\u5230\u5e73\u677f", s1Desc: "\u4ece Google Play \u4e0b\u8f7d BestCompanion\uff0c\u4f7f\u7528 Google \u8d26\u53f7\u767b\u5f55\u3002", s2Title: "\u5171\u4eab\u65e5\u5386", s2Desc: "\u4e0e\u5e73\u677f\u8d26\u53f7\u5171\u4eab Google \u65e5\u5386\u3002", s3Title: "\u8fdc\u7a0b\u7ba1\u7406", s3Desc: "\u4ece\u624b\u673a\u6216\u7535\u8111\u6dfb\u52a0\u4e8b\u4ef6\u3002\u51e0\u5206\u949f\u5185\u663e\u793a\u5728\u5e73\u677f\u4e0a\u3002", langTitle: "\u8bf4\u60a8\u7684\u8bed\u8a00", ctaTitle: "\u7ed9\u60a8\u7684\u4eb2\u4eba\u6e05\u6670\u7684\u4e00\u5929", ctaSubtitle: "\u65e0\u5e7f\u544a\u3002\u65e0\u6742\u4e71\u3002\u65e0\u590d\u6742\u83dc\u5355\u3002\n\u53ea\u6709\u4ed6\u4eec\u9700\u8981\u7684\u4fe1\u606f\uff0c\u59cb\u7ec8\u53ef\u89c1\u3002", privacy: "\u9690\u79c1\u653f\u7b56", contact: "\u8054\u7cfb\u6211\u4eec" },
+hi: { _name: "\u0939\u093f\u0928\u094d\u0926\u0940", tagline: "\u092c\u0941\u091c\u0941\u0930\u094d\u0917\u094b\u0902 \u0914\u0930 \u0921\u093f\u092e\u0947\u0902\u0936\u093f\u092f\u093e \u0926\u0947\u0916\u092d\u093e\u0932 \u0915\u0947 \u0932\u093f\u090f \u0939\u092e\u0947\u0936\u093e \u091a\u093e\u0932\u0942 \u0915\u0948\u0932\u0947\u0902\u0921\u0930 \u0921\u093f\u0938\u094d\u092a\u094d\u0932\u0947", subtitle: "\u0907\u0938\u0947 \u090f\u0915 \u091f\u0948\u092c\u0932\u0947\u091f \u092a\u0930 \u0930\u0916\u0947\u0902 \u0914\u0930 \u0905\u092a\u0928\u0947 \u092a\u094d\u0930\u093f\u092f\u091c\u0928 \u0915\u094b \u0926\u093f\u0928 \u0915\u0940 \u0938\u094d\u092a\u0937\u094d\u091f \u091d\u0932\u0915 \u0926\u0947\u0902\u0964 \u0926\u0947\u0916\u092d\u093e\u0932 \u0915\u0930\u0928\u0947 \u0935\u093e\u0932\u0947 Google Calendar \u0938\u0947 \u0938\u092c \u0915\u0941\u091b \u0926\u0942\u0930 \u0938\u0947 \u092a\u094d\u0930\u092c\u0902\u0927\u093f\u0924 \u0915\u0930\u0924\u0947 \u0939\u0948\u0902\u0964", cta: "Google Play \u0938\u0947 \u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u0915\u0930\u0947\u0902", featuresTitle: "\u091c\u094b \u092e\u0939\u0924\u094d\u0935\u092a\u0942\u0930\u094d\u0923 \u0939\u0948 \u0909\u0938\u0915\u0947 \u0932\u093f\u090f", featuresSubtitle: "\u0938\u0930\u0932, \u0938\u094d\u092a\u0937\u094d\u091f \u0914\u0930 \u0939\u092e\u0947\u0936\u093e \u0926\u093f\u0916\u093e\u0908 \u0926\u0947\u0928\u0947 \u0935\u093e\u0932\u093e", f1Title: "\u0926\u0942\u0930 \u0938\u0947 \u092a\u094d\u0930\u092c\u0902\u0927\u0928", f1Desc: "\u0926\u0947\u0916\u092d\u093e\u0932 \u0915\u0930\u0928\u0947 \u0935\u093e\u0932\u0947 Google Calendar \u0938\u0947 \u0905\u092a\u0928\u0947 \u092b\u094b\u0928 \u0938\u0947 \u0915\u093e\u0930\u094d\u092f\u0915\u094d\u0930\u092e \u091c\u094b\u0921\u093c\u0924\u0947 \u092f\u093e \u092c\u0926\u0932\u0924\u0947 \u0939\u0948\u0902\u0964", f2Title: "\u0927\u094d\u0935\u0928\u093f \u0905\u0932\u0930\u094d\u091f", f2Desc: "6 \u0905\u0932\u093e\u0930\u094d\u092e \u0927\u094d\u0935\u0928\u093f\u092f\u094b\u0902 \u092f\u093e \u0938\u093e\u0907\u0932\u0947\u0902\u091f \u092e\u094b\u0921 \u092e\u0947\u0902 \u0938\u0947 \u091a\u0941\u0928\u0947\u0902\u0964", f3Title: "\u092c\u0939\u0941\u0924 \u092c\u0921\u093c\u093e \u091f\u0947\u0915\u094d\u0938\u094d\u091f", f3Desc: "\u0915\u092e\u0930\u0947 \u0915\u0947 \u0926\u0942\u0938\u0930\u0947 \u091b\u094b\u0930 \u0938\u0947 \u092a\u0922\u093c\u0928\u0947 \u092f\u094b\u0917\u094d\u092f\u0964", f4Title: "\u0939\u092e\u0947\u0936\u093e \u091a\u093e\u0932\u0942 \u0921\u093f\u0938\u094d\u092a\u094d\u0932\u0947", f4Desc: "OLED \u0914\u0930 AMOLED \u0938\u094d\u0915\u094d\u0930\u0940\u0928 \u0915\u0947 \u0932\u093f\u090f \u092c\u0930\u094d\u0928-\u0907\u0928 \u0938\u0941\u0930\u0915\u094d\u0937\u093e\u0964", f5Title: "20 \u092d\u093e\u0937\u093e\u090f\u0902", f5Desc: "\u0939\u093f\u0902\u0926\u0940, \u0905\u0902\u0917\u094d\u0930\u0947\u091c\u0940, \u0938\u094d\u092a\u0947\u0928\u093f\u0936, \u092b\u094d\u0930\u0947\u0902\u091a \u0906\u0926\u093f \u0915\u093e \u092a\u0942\u0930\u094d\u0923 \u0938\u092e\u0930\u094d\u0925\u0928\u0964", f6Title: "\u0917\u094b\u092a\u0928\u0940\u092f\u0924\u093e \u092a\u0939\u0932\u0947", f6Desc: "\u092c\u093e\u0939\u0930\u0940 \u0938\u0930\u094d\u0935\u0930 \u092a\u0930 \u0915\u094b\u0908 \u0921\u0947\u091f\u093e \u0928\u0939\u0940\u0902\u0964 \u0915\u094b\u0908 \u0935\u093f\u091c\u094d\u091e\u093e\u092a\u0928 \u0914\u0930 \u091f\u094d\u0930\u0948\u0915\u093f\u0902\u0917 \u0928\u0939\u0940\u0902\u0964", perfectTitle: "\u0907\u0928\u0915\u0947 \u0932\u093f\u090f \u0909\u092a\u092f\u0941\u0915\u094d\u0924", perfectSubtitle: "\u091c\u0939\u093e\u0902 \u0906\u092a\u0915\u0947 \u092a\u094d\u0930\u093f\u092f\u091c\u0928 \u0915\u094b \u0938\u094d\u092a\u0937\u094d\u091f\u0924\u093e \u0915\u0940 \u091c\u0930\u0942\u0930\u0924 \u0939\u0948", u1Title: "\u0930\u0938\u094b\u0908 \u0915\u0940 \u092e\u0947\u091c", u1Desc: "\u092a\u0942\u0930\u093e \u092a\u0930\u093f\u0935\u093e\u0930 \u0926\u0947\u0916 \u0938\u0915\u0924\u093e \u0939\u0948", u2Title: "\u092c\u093f\u0938\u094d\u0924\u0930 \u0915\u0947 \u092a\u093e\u0938", u2Desc: "\u091c\u093e\u0917\u0915\u0930 \u0926\u0935\u093e\u0908 \u0915\u0940 \u092f\u093e\u0926 \u0914\u0930 \u0926\u093f\u0928 \u0915\u0940 \u092f\u094b\u091c\u0928\u093e \u0926\u0947\u0916\u0947\u0902", u3Title: "\u0935\u0943\u0926\u094d\u0927\u093e\u0936\u094d\u0930\u092e", u3Desc: "\u0915\u0930\u094d\u092e\u091a\u093e\u0930\u0940 \u0914\u0930 \u092a\u0930\u093f\u0935\u093e\u0930 \u0926\u0942\u0930 \u0938\u0947 \u0905\u092a\u0921\u0947\u091f \u0915\u0930\u0924\u0947 \u0939\u0948\u0902", u4Title: "\u0926\u0935\u093e\u0908 \u0915\u0940 \u092f\u093e\u0926", u4Desc: "\u0927\u094d\u0935\u0928\u093f \u0905\u0932\u0930\u094d\u091f \u0938\u0941\u0928\u093f\u0936\u094d\u091a\u093f\u0924 \u0915\u0930\u0924\u0947 \u0939\u0948\u0902 \u0915\u093f \u0915\u094b\u0908 \u0905\u092a\u0949\u0907\u0902\u091f\u092e\u0947\u0902\u091f \u0928 \u091b\u0942\u091f\u0947", howTitle: "\u092f\u0939 \u0915\u0948\u0938\u0947 \u0915\u093e\u092e \u0915\u0930\u0924\u093e \u0939\u0948", howSubtitle: "\u0924\u0940\u0928 \u0938\u0930\u0932 \u0915\u0926\u092e", s1Title: "\u091f\u0948\u092c\u0932\u0947\u091f \u092a\u0930 \u0907\u0902\u0938\u094d\u091f\u0949\u0932 \u0915\u0930\u0947\u0902", s1Desc: "Google Play \u0938\u0947 BestCompanion \u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u0915\u0930\u0947\u0902 \u0914\u0930 Google \u0916\u093e\u0924\u0947 \u0938\u0947 \u0932\u0949\u0917 \u0907\u0928 \u0915\u0930\u0947\u0902\u0964", s2Title: "\u0915\u0948\u0932\u0947\u0902\u0921\u0930 \u0936\u0947\u092f\u0930 \u0915\u0930\u0947\u0902", s2Desc: "\u091f\u0948\u092c\u0932\u0947\u091f \u0915\u0947 \u0916\u093e\u0924\u0947 \u0915\u0947 \u0938\u093e\u0925 Google Calendar \u0936\u0947\u092f\u0930 \u0915\u0930\u0947\u0902\u0964", s3Title: "\u0926\u0942\u0930 \u0938\u0947 \u092a\u094d\u0930\u092c\u0902\u0927\u093f\u0924 \u0915\u0930\u0947\u0902", s3Desc: "\u0905\u092a\u0928\u0947 \u092b\u094b\u0928 \u092f\u093e \u0915\u0902\u092a\u094d\u092f\u0942\u091f\u0930 \u0938\u0947 \u0915\u093e\u0930\u094d\u092f\u0915\u094d\u0930\u092e \u091c\u094b\u0921\u093c\u0947\u0902\u0964 \u092e\u093f\u0928\u091f\u094b\u0902 \u092e\u0947\u0902 \u091f\u0948\u092c\u0932\u0947\u091f \u092a\u0930 \u0926\u093f\u0916\u0947\u0902\u0964", langTitle: "\u0906\u092a\u0915\u0940 \u092d\u093e\u0937\u093e \u092e\u0947\u0902", ctaTitle: "\u0905\u092a\u0928\u0947 \u092a\u094d\u0930\u093f\u092f\u091c\u0928 \u0915\u094b \u0938\u094d\u092a\u0937\u094d\u091f\u0924\u093e \u0926\u0947\u0902", ctaSubtitle: "\u0915\u094b\u0908 \u0935\u093f\u091c\u094d\u091e\u093e\u092a\u0928 \u0928\u0939\u0940\u0902\u0964 \u0915\u094b\u0908 \u0905\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e \u0928\u0939\u0940\u0902\u0964 \u0915\u094b\u0908 \u091c\u091f\u093f\u0932 \u092e\u0947\u0928\u0942 \u0928\u0939\u0940\u0902\u0964\n\u0938\u093f\u0930\u094d\u092b \u0935\u0939 \u091c\u093e\u0928\u0915\u093e\u0930\u0940 \u091c\u094b \u091c\u0930\u0942\u0930\u0940 \u0939\u0948, \u0939\u092e\u0947\u0936\u093e \u0926\u093f\u0916\u093e\u0908 \u0926\u0947\u0928\u0947 \u0935\u093e\u0932\u0940\u0964", privacy: "\u0917\u094b\u092a\u0928\u0940\u092f\u0924\u093e \u0928\u0940\u0924\u093f", contact: "\u0938\u0902\u092a\u0930\u094d\u0915" },
+tr: { _name: "T\u00fcrk\u00e7e", tagline: "Ya\u015fl\u0131 ve demans bak\u0131m\u0131 i\u00e7in her zaman a\u00e7\u0131k takvim ekran\u0131", subtitle: "Bir tablete yerle\u015ftirin ve sevdi\u011finiz ki\u015fiye g\u00fcn\u00fcn net bir g\u00f6r\u00fcn\u00fcm\u00fcn\u00fc sunun. Bak\u0131c\u0131lar Google Takvim \u00fczerinden her \u015feyi uzaktan y\u00f6netir.", cta: "Google Play'den indirin", featuresTitle: "\u00d6nemli olan i\u00e7in tasarland\u0131", featuresSubtitle: "Basit, net ve her zaman g\u00f6r\u00fcn\u00fcr", f1Title: "Uzaktan y\u00f6netim", f1Desc: "Bak\u0131c\u0131lar Google Takvim ile kendi telefonlar\u0131ndan etkinlik ekler veya de\u011fi\u015ftirir.", f2Title: "Sesli uyar\u0131lar", f2Desc: "6 alarm sesi veya sessiz mod aras\u0131ndan se\u00e7in.", f3Title: "Ekstra b\u00fcy\u00fck yaz\u0131", f3Desc: "Odan\u0131n kar\u015f\u0131 taraf\u0131ndan okunabilir. Ayarlanabilir yaz\u0131 tipi ve renkler.", f4Title: "Her zaman a\u00e7\u0131k ekran", f4Desc: "OLED ve AMOLED ekranlar i\u00e7in yanma korumas\u0131 ile ekran s\u00fcrekli a\u00e7\u0131k kal\u0131r.", f5Title: "20 dil", f5Desc: "T\u00fcrk\u00e7e, \u0130ngilizce, \u0130spanyolca, Frans\u0131zca, Almanca ve daha fazlas\u0131.", f6Title: "\u00d6nce gizlilik", f6Desc: "Harici sunucularda veri yok. Reklam ve izleme yok.", perfectTitle: "\u0130deal", perfectSubtitle: "Sevdi\u011finiz ki\u015finin g\u00fcn\u00fc net g\u00f6rmesi gereken her yerde", u1Title: "Mutfak masas\u0131", u1Desc: "T\u00fcm ailenin g\u00f6rebilece\u011fi g\u00fcnl\u00fck program", u2Title: "Ba\u015fucu", u2Desc: "Uyan\u0131n ve ila\u00e7 hat\u0131rlatmalar\u0131yla g\u00fcn\u00fcn plan\u0131n\u0131 g\u00f6r\u00fcn", u3Title: "Bak\u0131m evi", u3Desc: "Personel ve aile taraf\u0131ndan uzaktan g\u00fcncellenen duvar ekran\u0131", u4Title: "\u0130la\u00e7 hat\u0131rlatmalar\u0131", u4Desc: "Sesli uyar\u0131lar randevular\u0131n ka\u00e7\u0131r\u0131lmamas\u0131n\u0131 sa\u011flar", howTitle: "Nas\u0131l \u00e7al\u0131\u015f\u0131r", howSubtitle: "\u00dc\u00e7 basit ad\u0131m", s1Title: "Tablete y\u00fckleyin", s1Desc: "Google Play'den BestCompanion'u indirin ve Google hesab\u0131yla giri\u015f yap\u0131n.", s2Title: "Takvim payla\u015f\u0131n", s2Desc: "Tabletin hesab\u0131yla Google Takvim payla\u015f\u0131n.", s3Title: "Uzaktan y\u00f6netin", s3Desc: "Telefonunuzdan veya bilgisayar\u0131n\u0131zdan etkinlik ekleyin. Dakikalar i\u00e7inde tablette g\u00f6r\u00fcn\u00fcr.", langTitle: "Sizin dilinizi konu\u015fur", ctaTitle: "Sevdi\u011finize netlik sunun", ctaSubtitle: "Reklam yok. Karma\u015fa yok. Kar\u0131\u015f\u0131k men\u00fcler yok.\nSadece ihtiya\u00e7 duyduklar\u0131 bilgi, her zaman g\u00f6r\u00fcn\u00fcr.", privacy: "Gizlilik politikas\u0131", contact: "\u0130leti\u015fim" },
+nl: { _name: "Nederlands", tagline: "Altijd-aan kalenderweergave voor ouderen- en dementiezorg", subtitle: "Plaats het op een tablet en geef uw dierbare een helder overzicht van de dag. Verzorgers beheren alles op afstand via Google Agenda.", cta: "Downloaden op Google Play", featuresTitle: "Ontworpen voor wat belangrijk is", featuresSubtitle: "Eenvoudig, helder en altijd zichtbaar", f1Title: "Op afstand beheerd", f1Desc: "Verzorgers voegen afspraken toe via Google Agenda vanaf hun eigen telefoon.", f2Title: "Geluidsalarmen", f2Desc: "Kies uit 6 alarmtonen of stille modus.", f3Title: "Extra groot lettertype", f3Desc: "Leesbaar vanaf de andere kant van de kamer. Aanpasbare lettergrootte en kleuren.", f4Title: "Altijd-aan scherm", f4Desc: "Het scherm blijft permanent aan met inbrand-bescherming voor OLED en AMOLED.", f5Title: "20 talen", f5Desc: "Volledige ondersteuning voor Nederlands, Engels, Spaans, Frans, Duits en meer.", f6Title: "Privacy voorop", f6Desc: "Geen gegevens op externe servers. Geen advertenties, geen tracking.", perfectTitle: "Perfect voor", perfectSubtitle: "Overal waar uw dierbare een helder dagmoverzicht nodig heeft", u1Title: "Keukentafel", u1Desc: "Een dagschema dat het hele gezin kan zien", u2Title: "Nachtkastje", u2Desc: "Wakker worden en het dagplan zien met medicijnherinneringen", u3Title: "Verpleeghuis", u3Desc: "Wandscherm dat door personeel en familie wordt bijgewerkt", u4Title: "Medicijnherinneringen", u4Desc: "Geluidsalarmen zorgen dat afspraken niet worden gemist", howTitle: "Hoe het werkt", howSubtitle: "Drie eenvoudige stappen", s1Title: "Installeer op een tablet", s1Desc: "Download BestCompanion van Google Play en log in met een Google-account.", s2Title: "Deel een agenda", s2Desc: "Deel een Google Agenda met het account van de tablet.", s3Title: "Beheer op afstand", s3Desc: "Voeg afspraken toe vanaf uw telefoon of computer. Ze verschijnen binnen minuten op de tablet.", langTitle: "Spreekt uw taal", ctaTitle: "Geef uw dierbare helderheid", ctaSubtitle: "Geen advertenties. Geen rommel. Geen ingewikkelde menu's.\nAlleen de informatie die ze nodig hebben, altijd zichtbaar.", privacy: "Privacybeleid", contact: "Contact" },
+pl: { _name: "Polski", tagline: "Ca\u0142odobowy wy\u015bwietlacz kalendarza do opieki nad osobami starszymi i z demencj\u0105", subtitle: "Umie\u015b\u0107 na tablecie i daj bliskiej osobie jasny widok dnia. Opiekunowie zarz\u0105dzaj\u0105 wszystkim zdalnie przez Kalendarz Google.", cta: "Pobierz z Google Play", featuresTitle: "Zaprojektowany dla tego, co wa\u017cne", featuresSubtitle: "Prosty, czytelny i zawsze widoczny", f1Title: "Zdalne zarz\u0105dzanie", f1Desc: "Opiekunowie dodaj\u0105 wydarzenia ze swojego telefonu przez Kalendarz Google.", f2Title: "Alarmy d\u017awi\u0119kowe", f2Desc: "Wybierz spo\u015br\u00f3d 6 d\u017awi\u0119k\u00f3w alarmu lub tryb cichy.", f3Title: "Bardzo du\u017cy tekst", f3Desc: "Czytelny z drugiego ko\u0144ca pokoju. Regulowany rozmiar czcionki i kolory.", f4Title: "Zawsze w\u0142\u0105czony ekran", f4Desc: "Ekran pozostaje w\u0142\u0105czony z ochron\u0105 przed wypaleniem OLED i AMOLED.", f5Title: "20 j\u0119zyk\u00f3w", f5Desc: "Pe\u0142ne wsparcie dla polskiego, angielskiego, hiszpa\u0144skiego, francuskiego i innych.", f6Title: "Prywatno\u015b\u0107 przede wszystkim", f6Desc: "Brak danych na zewn\u0119trznych serwerach. Brak reklam i \u015bledzenia.", perfectTitle: "Idealny do", perfectSubtitle: "Wsz\u0119dzie, gdzie bliska osoba potrzebuje jasnego obrazu dnia", u1Title: "St\u00f3\u0142 kuchenny", u1Desc: "Codzienny harmonogram widoczny dla ca\u0142ej rodziny", u2Title: "Szafka nocna", u2Desc: "Obud\u017a si\u0119 i zobacz plan dnia z przypomnieniami o lekach", u3Title: "Dom opieki", u3Desc: "Wy\u015bwietlacz \u015bcienny aktualizowany przez personel i rodzin\u0119", u4Title: "Przypomnienia o lekach", u4Desc: "Alarmy d\u017awi\u0119kowe zapewniaj\u0105, \u017ce \u017cadna wizyta nie zostanie pomini\u0119ta", howTitle: "Jak to dzia\u0142a", howSubtitle: "Trzy proste kroki", s1Title: "Zainstaluj na tablecie", s1Desc: "Pobierz BestCompanion z Google Play i zaloguj si\u0119 kontem Google.", s2Title: "Udost\u0119pnij kalendarz", s2Desc: "Udost\u0119pnij Kalendarz Google kontu tabletu.", s3Title: "Zarz\u0105dzaj zdalnie", s3Desc: "Dodawaj wydarzenia z telefonu lub komputera. Pojawiaj\u0105 si\u0119 na tablecie w ci\u0105gu minut.", langTitle: "M\u00f3wi w Twoim j\u0119zyku", ctaTitle: "Daj bliskiej osobie jasno\u015b\u0107", ctaSubtitle: "Bez reklam. Bez ba\u0142aganu. Bez skomplikowanych menu.\nTylko potrzebne informacje, zawsze widoczne.", privacy: "Polityka prywatno\u015bci", contact: "Kontakt" },
+sv: { _name: "Svenska", tagline: "Kalendervisning f\u00f6r \u00e4ldre- och demensv\u00e5rd som alltid \u00e4r p\u00e5", subtitle: "Placera den p\u00e5 en surfplatta och ge din n\u00e4ra en tydlig \u00f6verblick \u00f6ver dagen. V\u00e5rdare hanterar allt p\u00e5 distans via Google Kalender.", cta: "H\u00e4mta p\u00e5 Google Play", featuresTitle: "Designad f\u00f6r det som \u00e4r viktigt", featuresSubtitle: "Enkelt, tydligt och alltid synligt", f1Title: "Fj\u00e4rrstyrd", f1Desc: "V\u00e5rdare l\u00e4gger till h\u00e4ndelser fr\u00e5n sin egen telefon via Google Kalender.", f2Title: "Ljudlarm", f2Desc: "V\u00e4lj bland 6 alarmljud eller tyst l\u00e4ge.", f3Title: "Extra stor text", f3Desc: "L\u00e4sbar fr\u00e5n andra sidan rummet. Anpassningsbara teckensnitt och f\u00e4rger.", f4Title: "Alltid-p\u00e5-sk\u00e4rm", f4Desc: "Sk\u00e4rmen f\u00f6rblir p\u00e5 med skydd mot inbr\u00e4nning f\u00f6r OLED och AMOLED.", f5Title: "20 spr\u00e5k", f5Desc: "Fullt st\u00f6d f\u00f6r svenska, engelska, spanska, franska, tyska och fler.", f6Title: "Integritet f\u00f6rst", f6Desc: "Inga data p\u00e5 externa servrar. Inga annonser, ingen sp\u00e5rning.", perfectTitle: "Perfekt f\u00f6r", perfectSubtitle: "Var din n\u00e4ra beh\u00f6ver en tydlig \u00f6verblick", u1Title: "K\u00f6ksbordet", u1Desc: "Ett dagschema hela familjen kan se", u2Title: "S\u00e4ngbordet", u2Desc: "Vakna och se dagens plan med medicinp\u00e5minnelser", u3Title: "\u00c4ldreboende", u3Desc: "V\u00e4ggsk\u00e4rm som uppdateras av personal och familj", u4Title: "Medicinp\u00e5minnelser", u4Desc: "Ljudlarm s\u00e4kerst\u00e4ller att inga m\u00f6ten missas", howTitle: "S\u00e5 fungerar det", howSubtitle: "Tre enkla steg", s1Title: "Installera p\u00e5 surfplatta", s1Desc: "Ladda ner BestCompanion fr\u00e5n Google Play och logga in med ett Google-konto.", s2Title: "Dela en kalender", s2Desc: "Dela en Google Kalender med surfplattans konto.", s3Title: "Hantera p\u00e5 distans", s3Desc: "L\u00e4gg till h\u00e4ndelser fr\u00e5n din telefon eller dator. De visas p\u00e5 surfplattan inom minuter.", langTitle: "Talar ditt spr\u00e5k", ctaTitle: "Ge din n\u00e4ra klarhet", ctaSubtitle: "Inga annonser. Ingen r\u00f6ra. Inga kr\u00e5ngliga menyer.\nBara informationen de beh\u00f6ver, alltid synlig.", privacy: "Integritetspolicy", contact: "Kontakt" },
+da: { _name: "Dansk", tagline: "Altid-t\u00e6ndt kalendervisning til \u00e6ldre- og demenspleje", subtitle: "Placer den p\u00e5 en tablet og giv din k\u00e6re et klart overblik over dagen. Plejere styrer alt p\u00e5 afstand via Google Kalender.", cta: "Hent p\u00e5 Google Play", featuresTitle: "Designet til det der betyder noget", featuresSubtitle: "Enkelt, klart og altid synligt", f1Title: "Fjernstyret", f1Desc: "Plejere tilf\u00f8jer begivenheder fra deres egen telefon via Google Kalender.", f2Title: "Lydalarmer", f2Desc: "V\u00e6lg mellem 6 alarmlyde eller lydl\u00f8s tilstand.", f3Title: "Ekstra stor tekst", f3Desc: "L\u00e6sbar fra den anden side af v\u00e6relset. Justerbare skrifttyper og farver.", f4Title: "Altid-t\u00e6ndt sk\u00e6rm", f4Desc: "Sk\u00e6rmen forbliver t\u00e6ndt med indbr\u00e6ndingsbeskyttelse til OLED og AMOLED.", f5Title: "20 sprog", f5Desc: "Fuld underst\u00f8ttelse af dansk, engelsk, spansk, fransk, tysk og flere.", f6Title: "Privatliv f\u00f8rst", f6Desc: "Ingen data p\u00e5 eksterne servere. Ingen reklamer, ingen sporing.", perfectTitle: "Perfekt til", perfectSubtitle: "Hvor din k\u00e6re har brug for et klart overblik", u1Title: "K\u00f8kkenbordet", u1Desc: "En daglig tidsplan hele familien kan se", u2Title: "Natbordet", u2Desc: "V\u00e5gn op og se dagens plan med medicinp\u00e5mindelser", u3Title: "Plejehjem", u3Desc: "V\u00e6gsk\u00e6rm opdateret af personale og familie", u4Title: "Medicinp\u00e5mindelser", u4Desc: "Lydalarmer sikrer at aftaler ikke bliver glemt", howTitle: "S\u00e5dan virker det", howSubtitle: "Tre simple trin", s1Title: "Installer p\u00e5 tablet", s1Desc: "Download BestCompanion fra Google Play og log ind med en Google-konto.", s2Title: "Del en kalender", s2Desc: "Del en Google Kalender med tabletens konto.", s3Title: "Styr p\u00e5 afstand", s3Desc: "Tilf\u00f8j begivenheder fra din telefon eller computer. De vises p\u00e5 tabletten inden for minutter.", langTitle: "Taler dit sprog", ctaTitle: "Giv din k\u00e6re klarhed", ctaSubtitle: "Ingen reklamer. Ingen rod. Ingen komplicerede menuer.\nKun den information de har brug for, altid synlig.", privacy: "Privatlivspolitik", contact: "Kontakt" },
+no: { _name: "Norsk", tagline: "Alltid-p\u00e5 kalendervisning for eldre- og demensomsorg", subtitle: "Plasser den p\u00e5 et nettbrett og gi din kj\u00e6re en klar oversikt over dagen. Omsorgspersoner styrer alt p\u00e5 avstand via Google Kalender.", cta: "Last ned fra Google Play", featuresTitle: "Designet for det som betyr noe", featuresSubtitle: "Enkelt, tydelig og alltid synlig", f1Title: "Fjernstyrt", f1Desc: "Omsorgspersoner legger til hendelser fra sin egen telefon via Google Kalender.", f2Title: "Lydalarmer", f2Desc: "Velg mellom 6 alarmlyder eller lydl\u00f8s modus.", f3Title: "Ekstra stor tekst", f3Desc: "Lesbar fra andre siden av rommet. Justerbare skriftst\u00f8rrelser og farger.", f4Title: "Alltid-p\u00e5-skjerm", f4Desc: "Skjermen forblir p\u00e5 med innbrenningsbeskyttelse for OLED og AMOLED.", f5Title: "20 spr\u00e5k", f5Desc: "Full st\u00f8tte for norsk, engelsk, spansk, fransk, tysk og flere.", f6Title: "Personvern f\u00f8rst", f6Desc: "Ingen data p\u00e5 eksterne servere. Ingen annonser, ingen sporing.", perfectTitle: "Perfekt for", perfectSubtitle: "Uansett hvor din kj\u00e6re trenger en klar oversikt", u1Title: "Kj\u00f8kkenbordet", u1Desc: "En daglig plan hele familien kan se", u2Title: "Nattbordet", u2Desc: "V\u00e5kn opp og se dagens plan med medisinp\u00e5minnelser", u3Title: "Sykehjem", u3Desc: "Veggskjerm oppdatert av ansatte og familie", u4Title: "Medisinp\u00e5minnelser", u4Desc: "Lydalarmer sikrer at avtaler ikke blir glemt", howTitle: "Slik fungerer det", howSubtitle: "Tre enkle steg", s1Title: "Installer p\u00e5 nettbrett", s1Desc: "Last ned BestCompanion fra Google Play og logg inn med en Google-konto.", s2Title: "Del en kalender", s2Desc: "Del en Google Kalender med nettbrettets konto.", s3Title: "Styr p\u00e5 avstand", s3Desc: "Legg til hendelser fra telefonen eller datamaskinen. De vises p\u00e5 nettbrettet i l\u00f8pet av minutter.", langTitle: "Snakker ditt spr\u00e5k", ctaTitle: "Gi din kj\u00e6re klarhet", ctaSubtitle: "Ingen annonser. Ingen rot. Ingen kompliserte menyer.\nBare informasjonen de trenger, alltid synlig.", privacy: "Personvernerkl\u00e6ring", contact: "Kontakt" },
+fi: { _name: "Suomi", tagline: "Aina p\u00e4\u00e4ll\u00e4 oleva kalenterin\u00e4ytt\u00f6 ik\u00e4\u00e4ntyneiden ja muistisairaiden hoitoon", subtitle: "Aseta se tabletille ja anna l\u00e4heisellesi selke\u00e4 n\u00e4kym\u00e4 p\u00e4iv\u00e4\u00e4n. Hoitajat hallinnoivat kaikkea et\u00e4n\u00e4 Google-kalenterin kautta.", cta: "Lataa Google Playsta", featuresTitle: "Suunniteltu t\u00e4rke\u00e4\u00e4n", featuresSubtitle: "Yksinkertainen, selke\u00e4 ja aina n\u00e4kyvill\u00e4", f1Title: "Et\u00e4hallinta", f1Desc: "Hoitajat lis\u00e4\u00e4v\u00e4t tapahtumia omalta puhelimeltaan Google-kalenterin kautta.", f2Title: "\u00c4\u00e4nih\u00e4lytykset", f2Desc: "Valitse 6 h\u00e4lytys\u00e4\u00e4nest\u00e4 tai \u00e4\u00e4net\u00f6n tila.", f3Title: "Eritt\u00e4in suuri teksti", f3Desc: "Luettavissa huoneen toiselta puolelta. S\u00e4\u00e4dett\u00e4v\u00e4t fontit ja v\u00e4rit.", f4Title: "Aina p\u00e4\u00e4ll\u00e4 -n\u00e4ytt\u00f6", f4Desc: "N\u00e4ytt\u00f6 pysyy p\u00e4\u00e4ll\u00e4 OLED- ja AMOLED-n\u00e4ytt\u00f6jen palosuojauksella.", f5Title: "20 kielt\u00e4", f5Desc: "T\u00e4ysi tuki suomelle, englanniksi, espanjaksi, ranskaksi, saksaksi ja muille.", f6Title: "Yksityisyys edell\u00e4", f6Desc: "Ei tietoja ulkoisilla palvelimilla. Ei mainoksia eik\u00e4 seurantaa.", perfectTitle: "T\u00e4ydellinen", perfectSubtitle: "Kaikkialle miss\u00e4 l\u00e4heisesi tarvitsee selke\u00e4n n\u00e4kym\u00e4n p\u00e4iv\u00e4\u00e4n", u1Title: "Keitti\u00f6n p\u00f6yt\u00e4", u1Desc: "P\u00e4iv\u00e4aikataulu jonka koko perhe n\u00e4kee", u2Title: "Y\u00f6p\u00f6yt\u00e4", u2Desc: "Her\u00e4\u00e4 ja n\u00e4e p\u00e4iv\u00e4n suunnitelma l\u00e4\u00e4kemuistutuksineen", u3Title: "Hoivakoti", u3Desc: "Sein\u00e4n\u00e4ytt\u00f6 jota henkil\u00f6kunta ja perhe p\u00e4ivitt\u00e4v\u00e4t et\u00e4n\u00e4", u4Title: "L\u00e4\u00e4kemuistutukset", u4Desc: "\u00c4\u00e4nih\u00e4lytykset varmistavat ettei tapaamisia unohdeta", howTitle: "N\u00e4in se toimii", howSubtitle: "Kolme helppoa vaihetta", s1Title: "Asenna tabletille", s1Desc: "Lataa BestCompanion Google Playsta ja kirjaudu Google-tilill\u00e4.", s2Title: "Jaa kalenteri", s2Desc: "Jaa Google-kalenteri tabletin tilin kanssa.", s3Title: "Hallitse et\u00e4n\u00e4", s3Desc: "Lis\u00e4\u00e4 tapahtumia puhelimelta tai tietokoneelta. Ne n\u00e4kyv\u00e4t tabletilla minuuteissa.", langTitle: "Puhuu kielt\u00e4si", ctaTitle: "Anna l\u00e4heisellesi selkeys", ctaSubtitle: "Ei mainoksia. Ei sotkua. Ei monimutkaisia valikkoja.\nVain tarvittava tieto, aina n\u00e4kyvill\u00e4.", privacy: "Tietosuojak\u00e4yt\u00e4nt\u00f6", contact: "Ota yhteytt\u00e4" }
+};
+
+const RTL_LANGS = ['he', 'ar'];
+const LANG_ORDER = ['en','es','fr','de','it','pt','ru','ja','ko','zh','ar','he','hi','tr','nl','pl','sv','da','no','fi'];
+
+function detectLanguage() {
+  const saved = localStorage.getItem('bestcompanion_lang');
+  if (saved && T[saved]) return saved;
+  const nav = (navigator.language || '').substring(0, 2).toLowerCase();
+  return T[nav] ? nav : 'en';
+}
+
+function setLanguage(lang) {
+  if (!T[lang]) lang = 'en';
+  localStorage.setItem('bestcompanion_lang', lang);
+  const strings = T[lang];
+
+  // Set text direction
+  const dir = strings._dir || 'ltr';
+  document.documentElement.setAttribute('dir', dir);
+  document.documentElement.setAttribute('lang', lang);
+
+  // Update all translatable elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (strings[key]) {
+      el.textContent = strings[key];
+    }
+  });
+
+  // Update dropdown
+  document.getElementById('langSelect').value = lang;
+}
+
+// Populate language dropdown
+const select = document.getElementById('langSelect');
+LANG_ORDER.forEach(code => {
+  const opt = document.createElement('option');
+  opt.value = code;
+  opt.textContent = T[code]._name;
+  select.appendChild(opt);
+});
+
+// Initialize
+setLanguage(detectLanguage());
+</script>
 </body>
 </html>
