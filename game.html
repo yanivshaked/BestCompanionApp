@@ -717,6 +717,21 @@
         const sharedParticleGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
         const sharedBulletGeo = new THREE.SphereGeometry(0.15, 6, 6);
 
+        /* Returns a random position within range that doesn't overlap any tree */
+        function safeRandomPos(range) {
+            for (let attempt = 0; attempt < 30; attempt++) {
+                const x = (Math.random() - 0.5) * range;
+                const z = (Math.random() - 0.5) * range;
+                let tooClose = false;
+                for (const t of trees) {
+                    const dx = x - t.x, dz = z - t.z;
+                    if (dx * dx + dz * dz < 16) { tooClose = true; break; } // radius 4
+                }
+                if (!tooClose) return { x, z };
+            }
+            return { x: (Math.random() - 0.5) * range, z: (Math.random() - 0.5) * range };
+        }
+
         function spawnParticles(pos, color, count, spread, life)
         {
             for (let i = 0; i < count; i++)
@@ -1222,7 +1237,7 @@
             pickups.push(g);
         }
         for (let i = 0; i < 15; i++)
-            pickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            { const p = safeRandomPos(260); pickup(p.x, p.z); }
 
         /* DIAMONDS */
         function diamond(x, z)
@@ -1245,7 +1260,7 @@
             diamonds.push(container);
         }
         for (let i = 0; i < 30; i++)
-            diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            { const p = safeRandomPos(260); diamond(p.x, p.z); }
 
         /* MINES (player-placed) */
         const sharedMineGeo = new THREE.BoxGeometry(0.8, 0.3, 0.8);
@@ -1319,7 +1334,7 @@
             minePickups.push(g);
         }
         for (let i = 0; i < 8; i++)
-            spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
 
 
         /* ============================================= */
@@ -1530,6 +1545,7 @@
         let mineCount = 3;
         let speedBoostTimer = 0;
         let comboCount = 0, comboTimer = 0;
+        let staminaLocked = false;
 
         /* WAVE ANNOUNCE */
         function showWaveAnnounce(text)
@@ -1565,7 +1581,7 @@
         {
             hp = 100; diamondCount = 0; level = 1; score = 0; kills = 0;
             gameOver = false; lastHit = 0; velY = 0; stamina = 100;
-            mineCount = 3; speedBoostTimer = 0; comboCount = 0; comboTimer = 0;
+            mineCount = 3; speedBoostTimer = 0; comboCount = 0; comboTimer = 0; staminaLocked = false;
             player.position.set(0, 0, 0);
 
             for (const p of pickups) scene.remove(p);
@@ -1590,9 +1606,9 @@
             animals.length = 0;
             for (let i = 0; i < 10; i++) sheep((Math.random() - 0.5) * 240, (Math.random() - 0.5) * 240);
 
-            for (let i = 0; i < 15; i++) pickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
-            for (let i = 0; i < 30; i++) diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
-            for (let i = 0; i < 8; i++) spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            for (let i = 0; i < 15; i++) { const p = safeRandomPos(260); pickup(p.x, p.z); }
+            for (let i = 0; i < 30; i++) { const p = safeRandomPos(260); diamond(p.x, p.z); }
+            for (let i = 0; i < 8; i++) { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
 
             // Reset birds to 5
             for (const b of birds) scene.remove(b);
@@ -1649,7 +1665,7 @@
             updateStats();
             playLevelUp();
 
-            enemies.forEach(e => { if (!e.isBoss) e.speed += 0.01; });
+            enemies.forEach(e => { if (!e.isBoss) e.speed += 0.015 + level * 0.003; });
 
             // Boss every 3 levels
             if (level % 3 === 0)
@@ -1660,14 +1676,18 @@
             showWaveAnnounce("LEVEL " + level);
 
             for (let i = 0; i < Math.max(5, 18 - level * 2); i++)
-                diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+                { const p = safeRandomPos(260); diamond(p.x, p.z); }
 
-            // Extra enemies on higher levels
-            if (level > 2)
-            {
-                for (let i = 0; i < Math.min(level - 1, 4); i++)
-                    enemy((Math.random() - 0.5) * 150, (Math.random() - 0.5) * 150);
+            // Guarantee enough diamonds to reach next level
+            const needed = 10 - (diamondCount % 10);
+            while (diamonds.length < needed) {
+                const p = safeRandomPos(260); diamond(p.x, p.z);
             }
+
+            // Extra enemies every level — ramps up fast
+            const newEnemies = Math.min(2 + level, 8);
+            for (let i = 0; i < newEnemies; i++)
+                enemy((Math.random() - 0.5) * 150, (Math.random() - 0.5) * 150);
         }
 
 
@@ -1797,20 +1817,22 @@
             skyMat.color.setHSL(0.6, 0.3, dayFactor * 0.6 + 0.15);
 
             /* SPRINT & STAMINA */
-            let wantsSprint = keys["shift"] && stamina > 0;
+            if (stamina <= 0) staminaLocked = true;
+            if (staminaLocked && stamina >= 20) staminaLocked = false;
+            let wantsSprint = keys["shift"] && stamina > 0 && !staminaLocked;
             let isMoving = keys["w"] || keys["s"] || keys["a"] || keys["d"];
             let speed = 0.25;
 
             if (wantsSprint && isMoving)
             {
                 speed = 0.45;
-                stamina = Math.max(0, stamina - 1.5 * dt);
+                stamina = Math.max(0, stamina - 0.6 * dt);
             } else if (isMoving)
             {
-                stamina = Math.min(100, stamina + 0.4 * dt);
+                stamina = Math.min(100, stamina + 0.04 * dt);
             } else
             {
-                stamina = Math.min(100, stamina + 0.8 * dt);
+                stamina = Math.min(100, stamina + 0.08 * dt);
             }
             if (speedBoostTimer > 0) speed *= 1.6;
             updateStamina();
@@ -2241,7 +2263,7 @@
                     minePickups.splice(i, 1);
                     // Respawn a mine pickup elsewhere after delay
                     setTimeout(() => {
-                        if (!gameOver) spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+                        if (!gameOver) { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
                     }, 15000);
                 }
             }
