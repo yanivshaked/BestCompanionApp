@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Survival ENHANCED</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body>canvas:not(#minimap) {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        #info {
+            position: absolute;
+            bottom: 80px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            z-index: 10;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 1px;
+        }
+
+        #crosshair::before {
+            width: 2px;
+            height: 18px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #crosshair::after {
+            width: 18px;
+            height: 2px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* HUD PANEL */
+        #hud {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 18px;
+            align-items: flex-end;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+        }
+
+        .hud-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .hud-bar label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .bar-outer {
+            width: 220px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .bar-inner {
+            height: 100%;
+            transition: width 0.25s, background 0.3s;
+            border-radius: 3px;
+        }
+
+        .bar-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            pointer-events: none;
+        }
+
+        #hpFill {
+            width: 100%;
+            background: linear-gradient(180deg, #5fff5f, #2ecc2e);
+            box-shadow: 0 0 12px rgba(76, 255, 76, 0.5);
+        }
+
+        #staminaFill {
+            width: 100%;
+            background: linear-gradient(180deg, #ffbb33, #e69500);
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.4);
+        }
+
+        #diamondFill {
+            width: 0%;
+            background: linear-gradient(180deg, #33ffff, #00bcd4);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+        }
+
+        /* TOP-RIGHT STATS */
+        #stats {
+            position: absolute;
+            top: 14px;
+            right: 20px;
+            color: white;
+            font-size: 14px;
+            text-align: right;
+            z-index: 10;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+            line-height: 1.7;
+        }
+
+        #stats span {
+            opacity: 0.85;
+        }
+
+        /* WAVE ANNOUNCEMENT */
+        #waveAnnounce {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            color: white;
+            font-size: 48px;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s, transform 0.4s;
+            letter-spacing: 3px;
+        }
+
+        #waveAnnounce.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* MINIMAP */
+        #minimap {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 150px;
+            height: 150px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 6px;
+            overflow: hidden;
+            z-index: 10;
+            background: rgba(30, 60, 20, 0.6);
+        }
+
+        /* DEATH SCREEN */
+        #deathScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            z-index: 1000;
+        }
+
+        #deathScreen h1 {
+            font-size: 64px;
+            color: #ff3333;
+            text-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        #deathStats {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        #restartBtn {
+            padding: 14px 50px;
+            font-size: 20px;
+            background: #cc0000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: background 0.2s;
+        }
+
+        #restartBtn:hover {
+            background: #ff2222;
+        }
+
+        /* BLOOD EFFECT */
+        #blood {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(255, 0, 0, 0.6));
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+            transition: opacity 0.12s;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+</head>
+
+<body>
+
+    <div id="info">WASD Move | Shift Sprint | Space Jump | Click Shoot | Q Place Mine | Shoot Birds for Speed Boost</div>
+
+    <div id="hud">
+        <div class="hud-bar">
+            <label>HP</label>
+            <div class="bar-outer">
+                <div class="bar-inner" id="hpFill"></div>
+                <div class="bar-text" id="hpText">100 / 100</div>
+            </div>
+        </div>
+        <div class="hud-bar">
+            <label>Stamina</label>
+            <div class="bar-outer">
+                <div class="bar-inner" id="staminaFill"></div>
+                <div class="bar-text" id="staminaText">100%</div>
+            </div>
+        </div>
+        <div class="hud-bar">
+            <label>Diamonds</label>
+            <div class="bar-outer">
+                <div class="bar-inner" id="diamondFill"></div>
+                <div class="bar-text" id="diamondText">0 / 10</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stats">
+        <div>Level: <span id="levelVal">1</span></div>
+        <div>Score: <span id="scoreVal">0</span></div>
+        <div>Kills: <span id="killVal">0</span></div>
+        <div>Mines: <span id="mineVal">3</span></div>
+    </div>
+
+    <div id="waveAnnounce"></div>
+
+    <div id="crosshair"></div>
+
+    <canvas id="minimap"></canvas>
+
+    <div id="deathScreen">
+        <h1>GAME OVER</h1>
+        <div id="deathStats"></div>
+        <button id="restartBtn">RESTART</button>
+    </div>
+
+    <div id="blood"></div>
+
+    <script>
+
+        /* ============================================= */
+        /*  PROCEDURAL AUDIO ENGINE (Web Audio API)      */
+        /* ============================================= */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function ensureAudio()
+        {
+            if (!audioCtx) audioCtx = new AudioCtx();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playShoot()
+        {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sawtooth';
+            o.frequency.setValueAtTime(600, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.15);
+            g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playHit()
+        {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'square';
+            o.frequency.setValueAtTime(200, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.2);
+            g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function playPickup()
+        {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(500, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.12);
+            g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.18);
+        }
+
+        function playKill()
+        {
+            ensureAudio();
+            // Two-tone kill confirmation
+            [400, 600].forEach((freq, i) =>
+            {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'square';
+                o.frequency.value = freq;
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.08);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.08 + 0.12);
+                o.connect(g).connect(audioCtx.destination);
+                o.start(audioCtx.currentTime + i * 0.08);
+                o.stop(audioCtx.currentTime + i * 0.08 + 0.12);
+            });
+        }
+
+        function playLevelUp()
+        {
+            ensureAudio();
+            [400, 500, 600, 800].forEach((freq, i) =>
+            {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.value = freq;
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.1);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.15);
+                o.connect(g).connect(audioCtx.destination);
+                o.start(audioCtx.currentTime + i * 0.1);
+                o.stop(audioCtx.currentTime + i * 0.1 + 0.15);
+            });
+        }
+
+        function playDeath()
+        {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sawtooth';
+            o.frequency.setValueAtTime(300, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.8);
+            g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.8);
+        }
+
+        function playFootstep()
+        {
+            ensureAudio();
+            const bufSize = audioCtx.sampleRate * 0.04;
+            const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.08 * (1 - i / bufSize);
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const filt = audioCtx.createBiquadFilter();
+            filt.type = 'lowpass';
+            filt.frequency.value = 600;
+            src.connect(filt).connect(audioCtx.destination);
+            src.start();
+        }
+
+        function playBossRoar()
+        {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sawtooth';
+            o.frequency.setValueAtTime(80, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+            g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function playExplosion() {
+            ensureAudio();
+            // Low boom
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(80, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+            g.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.4);
+            // Noise crackle
+            const bufSize = audioCtx.sampleRate * 0.15;
+            const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const gn = audioCtx.createGain(); gn.gain.value = 0.15;
+            src.connect(gn).connect(audioCtx.destination);
+            src.start();
+        }
+
+        function playBirdSquawk() {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'square';
+            o.frequency.setValueAtTime(800, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+            o.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.12);
+            g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playMinePlaced() {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(300, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
+            g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            o.connect(g).connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.1);
+        }
+
+        /* Ambient wind loop */
+        let ambientStarted = false;
+        function startAmbient()
+        {
+            if (ambientStarted) return;
+            ambientStarted = true;
+            ensureAudio();
+            const bufSize = audioCtx.sampleRate * 4;
+            const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf; src.loop = true;
+            const filt = audioCtx.createBiquadFilter();
+            filt.type = 'lowpass'; filt.frequency.value = 200;
+            const g = audioCtx.createGain(); g.gain.value = 0.02;
+            src.connect(filt).connect(g).connect(audioCtx.destination);
+            src.start();
+        }
+
+
+        /* ============================================= */
+        /*  THREE.JS SCENE SETUP                         */
+        /* ============================================= */
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x88bbdd, 0.0025);
+
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        scene.add(new THREE.HemisphereLight(0xaaddff, 0x444422, 1.4));
+        const sun = new THREE.DirectionalLight(0xffeedd, 0.9);
+        sun.position.set(50, 100, 20);
+        sun.castShadow = true;
+        sun.shadow.mapSize.width = 1024;
+        sun.shadow.mapSize.height = 1024;
+        sun.shadow.camera.near = 0.5;
+        sun.shadow.camera.far = 500;
+        sun.shadow.camera.left = -150;
+        sun.shadow.camera.right = 150;
+        sun.shadow.camera.top = 150;
+        sun.shadow.camera.bottom = -150;
+        scene.add(sun);
+
+        const loader = new THREE.TextureLoader();
+
+        /* DAY-NIGHT CYCLE STATE */
+        let dayTime = 0;
+        const DAY_DURATION = 120; // seconds for a full cycle
+
+        /* SKYDOME */
+        const skyTex = loader.load("https://threejs.org/examples/textures/2294472375_24a3b8ef46_o.jpg");
+        const skyGeo = new THREE.SphereGeometry(900, 32, 15);
+        const skyMat = new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide });
+        const skyDome = new THREE.Mesh(skyGeo, skyMat);
+        scene.add(skyDome);
+
+        /* SUN MESH */
+        const sunTex = loader.load("https://threejs.org/examples/textures/lava/lavatile.jpg");
+        const sunGeo = new THREE.SphereGeometry(12, 32, 32);
+        const sunMat = new THREE.MeshBasicMaterial({ map: sunTex, color: 0xffaa00 });
+        const sunMesh = new THREE.Mesh(sunGeo, sunMat);
+        sunMesh.position.copy(sun.position.clone().normalize().multiplyScalar(400));
+        scene.add(sunMesh);
+
+        /* GROUND */
+        const grass = loader.load("https://threejs.org/examples/textures/terrain/grasslight-big.jpg");
+        grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
+        grass.repeat.set(100, 100);
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(1000, 1000),
+            new THREE.MeshLambertMaterial({ map: grass })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        /* REUSABLE TEXTURES */
+        const woolTex = loader.load("https://threejs.org/examples/textures/cloth.jpg");
+        const skinTex = loader.load("https://threejs.org/examples/textures/brick_diffuse.jpg");
+        const zombieTex = loader.load("https://threejs.org/examples/textures/crate.gif");
+
+        const trunkTex = loader.load("https://threejs.org/examples/textures/hardwood2_diffuse.jpg");
+        trunkTex.wrapS = trunkTex.wrapT = THREE.RepeatWrapping;
+        trunkTex.repeat.set(1, 4);
+
+        const leavesTex = loader.load("https://threejs.org/examples/textures/disturb.jpg");
+        leavesTex.wrapS = leavesTex.wrapT = THREE.RepeatWrapping;
+        leavesTex.repeat.set(2, 2);
+
+
+        /* ============================================= */
+        /*  PARTICLE SYSTEM                              */
+        /* ============================================= */
+        const particles = [];
+        const sharedParticleGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
+        const sharedBulletGeo = new THREE.SphereGeometry(0.15, 6, 6);
+
+        function spawnParticles(pos, color, count, spread, life)
+        {
+            for (let i = 0; i < count; i++)
+            {
+                const mat = new THREE.MeshBasicMaterial({ color, transparent: true });
+                const mesh = new THREE.Mesh(sharedParticleGeo, mat);
+                mesh.position.copy(pos);
+                mesh.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * spread,
+                    Math.random() * spread * 0.7 + 0.05,
+                    (Math.random() - 0.5) * spread
+                );
+                mesh.life = life || 40;
+                mesh.maxLife = mesh.life;
+                scene.add(mesh);
+                particles.push(mesh);
+            }
+        }
+
+        function updateParticles()
+        {
+            for (let i = particles.length - 1; i >= 0; i--)
+            {
+                const p = particles[i];
+                p.position.add(p.velocity);
+                p.velocity.y -= 0.005;
+                p.life--;
+                p.material.opacity = p.life / p.maxLife;
+                if (p.life <= 0)
+                {
+                    scene.remove(p);
+                    p.material.dispose();
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+
+        /* ============================================= */
+        /*  FLOATING TEXT (DAMAGE / HEAL NUMBERS)        */
+        /* ============================================= */
+        const floatingTexts = [];
+
+        function createFloatingLabel(text, color)
+        {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            ctx.font = 'Bold 32px Arial';
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 4;
+            ctx.strokeText(text, 128, 32);
+            ctx.fillText(text, 128, 32);
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(3, 0.75, 1);
+            return sprite;
+        }
+
+        function spawnFloatingText(position, text, color)
+        {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 48;
+            const ctx = canvas.getContext('2d');
+            ctx.font = 'Bold 28px Arial';
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeText(text, 64, 24);
+            ctx.fillText(text, 64, 24);
+            const texture = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(2, 0.6, 1);
+            sprite.position.copy(position);
+            sprite.position.y += 2.5;
+            sprite.life = 50;
+            scene.add(sprite);
+            floatingTexts.push(sprite);
+        }
+
+        function updateFloatingTexts()
+        {
+            for (let i = floatingTexts.length - 1; i >= 0; i--)
+            {
+                const ft = floatingTexts[i];
+                ft.position.y += 0.04;
+                ft.life--;
+                ft.material.opacity = ft.life / 50;
+                if (ft.life <= 0)
+                {
+                    scene.remove(ft);
+                    ft.material.map.dispose();
+                    ft.material.dispose();
+                    floatingTexts.splice(i, 1);
+                }
+            }
+        }
+
+
+        /* ============================================= */
+        /*  GAME OBJECTS                                 */
+        /* ============================================= */
+        const trees = [], animals = [], enemies = [], pickups = [], diamonds = [], birds = [], bullets = [], meats = [];
+        const mines = [], feathers = [], minePickups = [];
+
+        /* TREE */
+        const trunkMat = new THREE.MeshLambertMaterial({ map: trunkTex, color: 0x5c4033 });
+        const leafColors = [0x2e8b57, 0x228b22, 0x3cb371, 0x1e7a1e, 0x4caf50];
+
+        function tree(x, z)
+        {
+            const g = new THREE.Group();
+            const type = Math.random();
+            const scale = 0.8 + Math.random() * 0.6; // random size variation
+
+            if (type < 0.45)
+            {
+                // OAK — thick trunk, layered round canopy
+                const trunk = new THREE.Mesh(new THREE.BoxGeometry(1.0 * scale, 5 * scale, 1.0 * scale), trunkMat);
+                trunk.position.y = 2.5 * scale;
+                trunk.castShadow = true;
+                g.add(trunk);
+
+                // Roots
+                for (let r = 0; r < 3; r++)
+                {
+                    const root = new THREE.Mesh(new THREE.BoxGeometry(0.3 * scale, 0.6 * scale, 1.2 * scale), trunkMat);
+                    root.position.set(0, 0.3 * scale, 0);
+                    root.rotation.y = (r / 3) * Math.PI * 2 + Math.random() * 0.3;
+                    root.position.x += Math.sin(root.rotation.y) * 0.4 * scale;
+                    root.position.z += Math.cos(root.rotation.y) * 0.4 * scale;
+                    g.add(root);
+                }
+
+                // Layered canopy — 3 stacked leaf clusters
+                const lc = leafColors[Math.floor(Math.random() * leafColors.length)];
+                const leafMat = new THREE.MeshLambertMaterial({ map: leavesTex, color: lc });
+
+                const bot = new THREE.Mesh(new THREE.BoxGeometry(4.5 * scale, 2 * scale, 4.5 * scale), leafMat);
+                bot.position.set(0, 5.5 * scale, 0); bot.castShadow = true;
+                const mid = new THREE.Mesh(new THREE.BoxGeometry(3.5 * scale, 2 * scale, 3.5 * scale), leafMat);
+                mid.position.set(0.3 * scale, 7 * scale, 0.2 * scale); mid.castShadow = true;
+                const top = new THREE.Mesh(new THREE.BoxGeometry(2 * scale, 1.5 * scale, 2 * scale), leafMat);
+                top.position.set(-0.2 * scale, 8.3 * scale, -0.1 * scale); top.castShadow = true;
+                g.add(bot, mid, top);
+
+            } else if (type < 0.75)
+            {
+                // PINE / SPRUCE — tall thin trunk, stacked cone-like layers
+                const trunk = new THREE.Mesh(new THREE.BoxGeometry(0.6 * scale, 7 * scale, 0.6 * scale), trunkMat);
+                trunk.position.y = 3.5 * scale;
+                trunk.castShadow = true;
+                g.add(trunk);
+
+                const lc = leafColors[Math.floor(Math.random() * leafColors.length)];
+                const pineMat = new THREE.MeshLambertMaterial({ map: leavesTex, color: lc });
+
+                // 4 descending layers
+                const sizes = [1.2, 2.0, 2.8, 3.5];
+                const heights = [8.5, 7.2, 5.8, 4.3];
+                for (let i = 0; i < 4; i++)
+                {
+                    const layer = new THREE.Mesh(
+                        new THREE.BoxGeometry(sizes[i] * scale, 1.2 * scale, sizes[i] * scale), pineMat
+                    );
+                    layer.position.y = heights[i] * scale;
+                    layer.rotation.y = i * 0.4;
+                    layer.castShadow = true;
+                    g.add(layer);
+                }
+
+            } else
+            {
+                // BIRCH — thin white trunk with small clustered canopy
+                const birchTrunkMat = new THREE.MeshLambertMaterial({ map: trunkTex, color: 0xccbbaa });
+                const trunk = new THREE.Mesh(new THREE.BoxGeometry(0.5 * scale, 6 * scale, 0.5 * scale), birchTrunkMat);
+                trunk.position.y = 3 * scale;
+                trunk.castShadow = true;
+                g.add(trunk);
+
+                // Branch stubs
+                for (let b = 0; b < 2; b++)
+                {
+                    const branch = new THREE.Mesh(new THREE.BoxGeometry(1.5 * scale, 0.2 * scale, 0.2 * scale), birchTrunkMat);
+                    branch.position.set(0, (4 + b * 1.5) * scale, 0);
+                    branch.rotation.y = b * 1.2 + Math.random();
+                    branch.position.x += Math.sin(branch.rotation.y) * 0.5 * scale;
+                    branch.position.z += Math.cos(branch.rotation.y) * 0.5 * scale;
+                    g.add(branch);
+                }
+
+                // Light-green sparse canopy clusters
+                const birchLeafMat = new THREE.MeshLambertMaterial({ map: leavesTex, color: 0x6bbd4f });
+                for (let c = 0; c < 3; c++)
+                {
+                    const cluster = new THREE.Mesh(
+                        new THREE.BoxGeometry((1.8 + Math.random()) * scale, (1.5 + Math.random() * 0.5) * scale, (1.8 + Math.random()) * scale),
+                        birchLeafMat
+                    );
+                    cluster.position.set(
+                        (Math.random() - 0.5) * 1.5 * scale,
+                        (6 + c * 0.8) * scale,
+                        (Math.random() - 0.5) * 1.5 * scale
+                    );
+                    cluster.castShadow = true;
+                    g.add(cluster);
+                }
+            }
+
+            g.position.set(x, 0, z);
+            // Slight random rotation for variety
+            g.rotation.y = Math.random() * Math.PI * 2;
+
+            scene.add(g);
+            trees.push({ x, z });
+        }
+        for (let i = 0; i < 40; i++)
+            tree((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+        /* BOUNDARY FENCE */
+        const FENCE_LIMIT = 150;
+        function buildWorldFence()
+        {
+            const fenceGroup = new THREE.Group();
+            const postGeo = new THREE.BoxGeometry(0.4, 2.5, 0.4);
+            const railGeo = new THREE.BoxGeometry(4.2, 0.3, 0.15);
+            const fenceMat = new THREE.MeshLambertMaterial({ map: trunkTex, color: 0x6e473b });
+
+            function placeFenceSegment(x, z, rotate)
+            {
+                const post = new THREE.Mesh(postGeo, fenceMat);
+                post.position.set(x, 1.25, z);
+                fenceGroup.add(post);
+                const rail1 = new THREE.Mesh(railGeo, fenceMat);
+                const rail2 = new THREE.Mesh(railGeo, fenceMat);
+                rail1.position.set(x, 1.6, z);
+                rail2.position.set(x, 0.8, z);
+                if (rotate)
+                {
+                    rail1.rotation.y = Math.PI / 2;
+                    rail2.rotation.y = Math.PI / 2;
+                    rail1.position.x += 2;
+                    rail2.position.x += 2;
+                } else
+                {
+                    rail1.position.z += 2;
+                    rail2.position.z += 2;
+                }
+                fenceGroup.add(rail1, rail2);
+            }
+
+            for (let i = -FENCE_LIMIT; i <= FENCE_LIMIT; i += 4)
+            {
+                placeFenceSegment(i, -FENCE_LIMIT, false);
+                placeFenceSegment(i, FENCE_LIMIT, false);
+                placeFenceSegment(-FENCE_LIMIT, i, true);
+                placeFenceSegment(FENCE_LIMIT, i, true);
+            }
+            scene.add(fenceGroup);
+        }
+        buildWorldFence();
+
+        /* FLYING DINOSAURS */
+        function spawnDinosaur()
+        {
+            const dino = new THREE.Group();
+            const dinoMat = new THREE.MeshLambertMaterial({ color: 0x8b4513, map: skinTex });
+
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.4, 1.2), dinoMat);
+            dino.add(body);
+
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.5), dinoMat);
+            head.position.set(0, 0.3, 0.6);
+            const beak = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.1, 0.8),
+                new THREE.MeshLambertMaterial({ color: 0xd2b48c }));
+            beak.position.set(0, 0.2, 1.1);
+            dino.add(head, beak);
+
+            const leftWingPivot = new THREE.Group();
+            leftWingPivot.position.set(-0.3, 0, 0);
+            const leftWing = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 0.8), dinoMat);
+            leftWing.position.x = -0.7;
+            leftWingPivot.add(leftWing);
+            dino.add(leftWingPivot);
+
+            const rightWingPivot = new THREE.Group();
+            rightWingPivot.position.set(0.3, 0, 0);
+            const rightWing = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 0.8), dinoMat);
+            rightWing.position.x = 0.7;
+            rightWingPivot.add(rightWing);
+            dino.add(rightWingPivot);
+
+            dino.leftWing = leftWingPivot;
+            dino.rightWing = rightWingPivot;
+            dino.position.set((Math.random() - 0.5) * 260, Math.random() * 8 + 12, (Math.random() - 0.5) * 260);
+            dino.flySpeed = Math.random() * 0.08 + 0.05;
+            dino.wingSpeed = Math.random() * 0.05 + 0.08;
+            dino.rotation.y = Math.random() * Math.PI * 2;
+
+            scene.add(dino);
+            birds.push(dino);
+        }
+        for (let i = 0; i < 5; i++) spawnDinosaur();
+
+        /* SHEEP WITH WANDERING AI */
+        function sheep(x, z)
+        {
+            const g = new THREE.Group();
+
+            const body = new THREE.Mesh(
+                new THREE.BoxGeometry(1.8, 1.1, 1.2),
+                new THREE.MeshStandardMaterial({ map: woolTex, color: 0xffffff })
+            );
+            body.position.y = 1.2;
+            body.castShadow = true;
+
+            const head = new THREE.Mesh(
+                new THREE.BoxGeometry(0.7, 0.7, 0.7),
+                new THREE.MeshStandardMaterial({ map: skinTex, color: 0xf2f2f2 })
+            );
+            head.position.set(0, 1.4, 1);
+
+            const legGeo = new THREE.BoxGeometry(0.25, 0.8, 0.25);
+            const legMat = new THREE.MeshStandardMaterial({ map: skinTex, color: 0xdddddd });
+            const legs = [];
+            for (let i = 0; i < 4; i++)
+            {
+                const leg = new THREE.Mesh(legGeo, legMat);
+                legs.push(leg);
+                g.add(leg);
+            }
+            legs[0].position.set(0.6, 0.4, 0.4);
+            legs[1].position.set(-0.6, 0.4, 0.4);
+            legs[2].position.set(0.6, 0.4, -0.4);
+            legs[3].position.set(-0.6, 0.4, -0.4);
+            g.legs = legs;
+
+            g.add(body, head);
+            g.position.set(x, 0, z);
+
+            // Wandering AI state
+            g.wanderAngle = Math.random() * Math.PI * 2;
+            g.wanderTimer = Math.random() * 200 + 100;
+            g.wanderSpeed = 0.015;
+            g.isMoving = true;
+            g.pauseTimer = 0;
+
+            scene.add(g);
+            animals.push(g);
+        }
+        for (let i = 0; i < 10; i++)
+            sheep((Math.random() - 0.5) * 240, (Math.random() - 0.5) * 240);
+
+        /* MEAT DROP */
+        function spawnMeat(x, z)
+        {
+            const container = new THREE.Group();
+            container.position.set(x, 1.2, z);
+            container.baseY = 1.2;
+            container.speed = Math.random() * 0.006 + 0.003;
+
+            const meatMesh = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(0.55),
+                new THREE.MeshBasicMaterial({ color: 0xc44d4d })
+            );
+            container.add(meatMesh);
+
+            const label = createFloatingLabel("Meat (+15HP)", "#ff7373");
+            label.position.set(0, 1.1, 0);
+            label.scale.set(4, 1, 1);
+            container.add(label);
+
+            scene.add(container);
+            meats.push(container);
+        }
+
+        /* ENEMIES (NORMAL) */
+        function enemy(x, z)
+        {
+            const g = new THREE.Group();
+            const b = new THREE.Mesh(
+                new THREE.BoxGeometry(0.8, 1.3, 0.5),
+                new THREE.MeshLambertMaterial({ map: zombieTex, color: 0x00aa00 })
+            );
+            const h = new THREE.Mesh(
+                new THREE.BoxGeometry(0.9, 0.9, 0.9),
+                new THREE.MeshLambertMaterial({ map: zombieTex, color: 0x00ff00 })
+            );
+            b.position.y = 1.3;
+            h.position.y = 2.2;
+            b.castShadow = true;
+
+            // Arms
+            const armGeo = new THREE.BoxGeometry(0.25, 0.8, 0.25);
+            const armMat = new THREE.MeshLambertMaterial({ map: zombieTex, color: 0x00cc00 });
+            const lArm = new THREE.Mesh(armGeo, armMat);
+            lArm.position.set(-0.55, 1.5, 0);
+            const rArm = new THREE.Mesh(armGeo, armMat);
+            rArm.position.set(0.55, 1.5, 0);
+            g.lArm = lArm; g.rArm = rArm;
+
+            // Legs
+            const legGeo = new THREE.BoxGeometry(0.3, 0.7, 0.3);
+            const lLeg = new THREE.Mesh(legGeo, armMat);
+            lLeg.position.set(-0.2, 0.35, 0);
+            const rLeg = new THREE.Mesh(legGeo, armMat);
+            rLeg.position.set(0.2, 0.35, 0);
+            g.lLeg = lLeg; g.rLeg = rLeg;
+
+            g.add(b, h, lArm, rArm, lLeg, rLeg);
+            g.position.set(x, 0, z);
+            g.speed = enemies.length > 0 ? enemies[0].speed : 0.03;
+            g.isBoss = false;
+            g.hp = 1;
+            g.walkCycle = Math.random() * Math.PI * 2;
+
+            scene.add(g);
+            enemies.push(g);
+        }
+
+        /* BOSS ZOMBIE */
+        function spawnBoss()
+        {
+            const g = new THREE.Group();
+            const bossMat = new THREE.MeshLambertMaterial({ map: zombieTex, color: 0xcc0000 });
+            const b = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.6, 1.0), bossMat);
+            const h = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4),
+                new THREE.MeshLambertMaterial({ map: zombieTex, color: 0xff2200 }));
+            b.position.y = 2.6;
+            h.position.y = 4.4;
+            b.castShadow = true; h.castShadow = true;
+
+            // Boss arms
+            const armGeo = new THREE.BoxGeometry(0.5, 1.4, 0.5);
+            const lArm = new THREE.Mesh(armGeo, bossMat);
+            lArm.position.set(-1.1, 2.8, 0);
+            const rArm = new THREE.Mesh(armGeo, bossMat);
+            rArm.position.set(1.1, 2.8, 0);
+            g.lArm = lArm; g.rArm = rArm;
+
+            const legGeo = new THREE.BoxGeometry(0.6, 1.2, 0.6);
+            const lLeg = new THREE.Mesh(legGeo, bossMat);
+            lLeg.position.set(-0.4, 0.6, 0);
+            const rLeg = new THREE.Mesh(legGeo, bossMat);
+            rLeg.position.set(0.4, 0.6, 0);
+            g.lLeg = lLeg; g.rLeg = rLeg;
+
+            g.add(b, h, lArm, rArm, lLeg, rLeg);
+
+            // Red glowing eyes
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const lEye = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.15, 0.1), eyeMat);
+            lEye.position.set(-0.3, 4.5, 0.72);
+            const rEye = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.15, 0.1), eyeMat);
+            rEye.position.set(0.3, 4.5, 0.72);
+            g.add(lEye, rEye);
+
+            // Boss label
+            const label = createFloatingLabel("BOSS", "#ff3333");
+            label.position.set(0, 5.5, 0);
+            g.add(label);
+
+            g.position.set((Math.random() - 0.5) * 100, 0, (Math.random() - 0.5) * 100);
+            g.speed = 0.02;
+            g.isBoss = true;
+            g.hp = 5 + level * 2;
+            g.walkCycle = 0;
+
+            scene.add(g);
+            enemies.push(g);
+
+            playBossRoar();
+            showWaveAnnounce("BOSS INCOMING!");
+        }
+
+        for (let i = 0; i < 6; i++)
+            enemy((Math.random() - 0.5) * 150, (Math.random() - 0.5) * 150);
+
+        /* HP PICKUPS */
+        function pickup(x, z)
+        {
+            const g = new THREE.Group();
+            const orb = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(0.9),
+                new THREE.MeshBasicMaterial({ color: 0xff3b3b })
+            );
+            g.add(orb);
+            g.position.set(x, 1.5, z);
+            g.baseY = 1.5;
+            g.speed = Math.random() * 0.006 + 0.003;
+            const label = createFloatingLabel("+20 HP", "#ff5555");
+            label.position.set(0, 1.4, 0);
+            label.scale.set(4, 1, 1);
+            g.add(label);
+            scene.add(g);
+            pickups.push(g);
+        }
+        for (let i = 0; i < 15; i++)
+            pickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+        /* DIAMONDS */
+        function diamond(x, z)
+        {
+            const g = new THREE.Mesh(
+                new THREE.OctahedronGeometry(0.85),
+                new THREE.MeshBasicMaterial({ color: 0x00ffff })
+            );
+            const container = new THREE.Group();
+            container.position.set(x, 1.5, z);
+            container.baseY = 1.5;
+            container.speed = Math.random() * 0.006 + 0.003;
+            g.position.set(0, 0, 0);
+            container.add(g);
+            const label = createFloatingLabel("Diamond", "#00ffff");
+            label.position.set(0, 1.5, 0);
+            label.scale.set(4, 1, 1);
+            container.add(label);
+            scene.add(container);
+            diamonds.push(container);
+        }
+        for (let i = 0; i < 30; i++)
+            diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+        /* MINES (player-placed) */
+        const sharedMineGeo = new THREE.BoxGeometry(0.8, 0.3, 0.8);
+        const sharedMineSpikeGeo = new THREE.BoxGeometry(0.15, 0.4, 0.15);
+
+        function placeMine(x, z) {
+            const g = new THREE.Group();
+            const base = new THREE.Mesh(sharedMineGeo, new THREE.MeshBasicMaterial({ color: 0x555555 }));
+            base.position.y = 0.15;
+            g.add(base);
+            // Red blinking light
+            const light = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.1, 0.15),
+                new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+            light.position.y = 0.35;
+            g.add(light);
+            g.lightMesh = light;
+            // Corner spikes
+            for (let c = 0; c < 4; c++) {
+                const spike = new THREE.Mesh(sharedMineSpikeGeo, new THREE.MeshBasicMaterial({ color: 0x888888 }));
+                spike.position.set((c < 2 ? 0.3 : -0.3), 0.2, (c % 2 === 0 ? 0.3 : -0.3));
+                g.add(spike);
+            }
+            g.position.set(x, 0, z);
+            g.blinkTimer = 0;
+            scene.add(g);
+            mines.push(g);
+        }
+
+        /* GOLDEN FEATHER (speed boost pickup from killed birds) */
+        function spawnFeather(x, y, z) {
+            const g = new THREE.Group();
+            const feather = new THREE.Mesh(
+                new THREE.BoxGeometry(0.6, 0.1, 0.3),
+                new THREE.MeshBasicMaterial({ color: 0xffd700 })
+            );
+            g.add(feather);
+            const label = createFloatingLabel("Speed Boost!", "#ffd700");
+            label.position.set(0, 0.8, 0);
+            label.scale.set(4, 1, 1);
+            g.add(label);
+            g.position.set(x, y, z);
+            g.fallSpeed = 0.05;
+            g.grounded = false;
+            g.baseY = 0;
+            g.speed = 0.004;
+            g.life = 600; // disappears after ~10 seconds
+            scene.add(g);
+            feathers.push(g);
+        }
+
+        /* MINE PICKUPS (collectable ammo for mines) */
+        function spawnMinePickup(x, z) {
+            const g = new THREE.Group();
+            const crate = new THREE.Mesh(
+                new THREE.BoxGeometry(0.7, 0.7, 0.7),
+                new THREE.MeshBasicMaterial({ color: 0x886644 })
+            );
+            g.add(crate);
+            const icon = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.05),
+                new THREE.MeshBasicMaterial({ color: 0xff4444 }));
+            icon.position.z = 0.36;
+            g.add(icon);
+            const label = createFloatingLabel("+2 Mines", "#ff8844");
+            label.position.set(0, 1.0, 0);
+            label.scale.set(3.5, 0.9, 1);
+            g.add(label);
+            g.position.set(x, 0.5, z);
+            g.baseY = 0.5;
+            g.speed = 0.004;
+            scene.add(g);
+            minePickups.push(g);
+        }
+        for (let i = 0; i < 8; i++)
+            spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+
+        /* ============================================= */
+        /*  PLAYER                                       */
+        /* ============================================= */
+        const player = new THREE.Group();
+        scene.add(player);
+
+
+        /* ============================================= */
+        /*  INPUT                                        */
+        /* ============================================= */
+        const keys = {};
+        addEventListener("keydown", e => {
+            keys[e.key.toLowerCase()] = true;
+            // Q to place mine
+            if (e.key.toLowerCase() === 'q' && !gameOver && mineCount > 0 && document.pointerLockElement === document.body) {
+                mineCount--;
+                placeMine(player.position.x, player.position.z);
+                playMinePlaced();
+                updateStats();
+            }
+        });
+        addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+        let yaw = 0, pitch = 0;
+        addEventListener("mousemove", e =>
+        {
+            if (document.pointerLockElement === document.body)
+            {
+                yaw -= e.movementX * 0.002;
+                pitch -= e.movementY * 0.002;
+                pitch = Math.max(-1.2, Math.min(1.2, pitch));
+            }
+        });
+
+        addEventListener("click", () =>
+        {
+            if (document.pointerLockElement !== document.body)
+            {
+                document.body.requestPointerLock();
+                startAmbient();
+                return;
+            }
+            if (gameOver) return;
+
+            const bullet = new THREE.Mesh(sharedBulletGeo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+            bullet.position.copy(player.position);
+            bullet.position.y += 1.8;
+
+            const targetDir = new THREE.Vector3();
+            camera.getWorldDirection(targetDir);
+            bullet.velocity = targetDir.normalize().multiplyScalar(1.4);
+
+            scene.add(bullet);
+            bullets.push(bullet);
+            playShoot();
+        });
+
+
+        /* ============================================= */
+        /*  GAME STATE                                   */
+        /* ============================================= */
+        let hp = 100, diamondCount = 0, level = 1, score = 0, kills = 0;
+        let gameOver = false, lastHit = 0;
+        let velY = 0, onGround = true;
+        let stamina = 100;
+        let shakeTime = 0;
+        let footstepTimer = 0;
+        let mineCount = 3;
+        let speedBoostTimer = 0;
+        let comboCount = 0, comboTimer = 0;
+
+        /* WAVE ANNOUNCE */
+        function showWaveAnnounce(text)
+        {
+            const el = document.getElementById('waveAnnounce');
+            el.textContent = text;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2500);
+        }
+
+
+        /* ============================================= */
+        /*  EFFECTS                                      */
+        /* ============================================= */
+        function triggerHitEffect()
+        {
+            document.getElementById("blood").style.opacity = 0.5;
+            setTimeout(() => document.getElementById("blood").style.opacity = 0, 120);
+            shakeTime = 15;
+        }
+
+        function die()
+        {
+            gameOver = true;
+            playDeath();
+            document.getElementById("deathStats").innerHTML =
+                `Score: ${score}<br>Kills: ${kills}<br>Level: ${level}<br>Diamonds: ${diamondCount}<br>Mines Used: ${3 - mineCount + mines.length}`;
+            document.getElementById("deathScreen").style.display = "flex";
+            if (document.pointerLockElement) document.exitPointerLock();
+        }
+
+        function restartGame()
+        {
+            hp = 100; diamondCount = 0; level = 1; score = 0; kills = 0;
+            gameOver = false; lastHit = 0; velY = 0; stamina = 100;
+            mineCount = 3; speedBoostTimer = 0; comboCount = 0; comboTimer = 0;
+            player.position.set(0, 0, 0);
+
+            for (const p of pickups) scene.remove(p);
+            for (const d of diamonds) scene.remove(d);
+            for (const b of bullets) scene.remove(b);
+            for (const m of meats) scene.remove(m);
+            for (const p of particles) scene.remove(p);
+            for (const ft of floatingTexts) scene.remove(ft);
+            for (const mn of mines) scene.remove(mn);
+            for (const f of feathers) scene.remove(f);
+            for (const mp of minePickups) scene.remove(mp);
+            pickups.length = 0; diamonds.length = 0;
+            bullets.length = 0; meats.length = 0;
+            particles.length = 0; floatingTexts.length = 0;
+            mines.length = 0; feathers.length = 0; minePickups.length = 0;
+
+            for (const e of enemies) scene.remove(e);
+            enemies.length = 0;
+            for (let i = 0; i < 6; i++) enemy((Math.random() - 0.5) * 150, (Math.random() - 0.5) * 150);
+
+            for (const a of animals) scene.remove(a);
+            animals.length = 0;
+            for (let i = 0; i < 10; i++) sheep((Math.random() - 0.5) * 240, (Math.random() - 0.5) * 240);
+
+            for (let i = 0; i < 15; i++) pickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            for (let i = 0; i < 30; i++) diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+            for (let i = 0; i < 8; i++) spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+            // Reset birds to 5
+            for (const b of birds) scene.remove(b);
+            birds.length = 0;
+            for (let i = 0; i < 5; i++) spawnDinosaur();
+
+            enemies.forEach(e => e.speed = 0.03);
+            updateHP(); updateDiamonds(); updateStats();
+            document.getElementById("deathScreen").style.display = "none";
+        }
+
+        document.getElementById("restartBtn").addEventListener("click", restartGame);
+
+
+        /* ============================================= */
+        /*  UI UPDATES                                   */
+        /* ============================================= */
+        function updateHP()
+        {
+            hp = Math.max(0, Math.min(100, hp));
+            const bar = document.getElementById("hpFill");
+            bar.style.width = hp + "%";
+            if (hp > 60) bar.style.background = "linear-gradient(180deg, #5fff5f, #2ecc2e)";
+            else if (hp > 30) bar.style.background = "linear-gradient(180deg, #ffe044, #ccaa00)";
+            else bar.style.background = "linear-gradient(180deg, #ff5555, #cc2222)";
+            document.getElementById("hpText").textContent = Math.round(hp) + " / 100";
+            if (hp <= 0 && !gameOver) die();
+        }
+
+        function updateStamina()
+        {
+            document.getElementById("staminaFill").style.width = stamina + "%";
+            document.getElementById("staminaText").textContent = Math.round(stamina) + "%";
+        }
+
+        function updateDiamonds()
+        {
+            document.getElementById("diamondFill").style.width = ((diamondCount % 10) / 10) * 100 + "%";
+            document.getElementById("diamondText").textContent = (diamondCount % 10) + " / 10";
+        }
+
+        function updateStats()
+        {
+            document.getElementById("levelVal").textContent = level;
+            document.getElementById("scoreVal").textContent = score;
+            document.getElementById("killVal").textContent = kills;
+            document.getElementById("mineVal").textContent = mineCount;
+        }
+
+        function nextLevel()
+        {
+            level++;
+            updateDiamonds();
+            updateStats();
+            playLevelUp();
+
+            enemies.forEach(e => { if (!e.isBoss) e.speed += 0.01; });
+
+            // Boss every 3 levels
+            if (level % 3 === 0)
+            {
+                spawnBoss();
+            }
+
+            showWaveAnnounce("LEVEL " + level);
+
+            for (let i = 0; i < Math.max(5, 18 - level * 2); i++)
+                diamond((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+
+            // Extra enemies on higher levels
+            if (level > 2)
+            {
+                for (let i = 0; i < Math.min(level - 1, 4); i++)
+                    enemy((Math.random() - 0.5) * 150, (Math.random() - 0.5) * 150);
+            }
+        }
+
+
+        /* ============================================= */
+        /*  MINIMAP                                      */
+        /* ============================================= */
+        const minimapCanvas = document.getElementById('minimap');
+        const mCtx = minimapCanvas.getContext('2d');
+        minimapCanvas.width = 150;
+        minimapCanvas.height = 150;
+
+        function drawMinimap()
+        {
+            mCtx.fillStyle = 'rgba(30,60,20,0.8)';
+            mCtx.fillRect(0, 0, 150, 150);
+
+            const scale = 150 / (FENCE_LIMIT * 2);
+            const ox = 75, oy = 75;
+
+            function toMap(wx, wz)
+            {
+                return [ox + wx * scale, oy + wz * scale];
+            }
+
+            // Fence border
+            mCtx.strokeStyle = 'rgba(139,90,43,0.6)';
+            mCtx.lineWidth = 1;
+            const [fx1, fy1] = toMap(-FENCE_LIMIT, -FENCE_LIMIT);
+            const [fx2, fy2] = toMap(FENCE_LIMIT, FENCE_LIMIT);
+            mCtx.strokeRect(fx1, fy1, fx2 - fx1, fy2 - fy1);
+
+            // Trees
+            mCtx.fillStyle = '#2d6b2d';
+            for (const t of trees)
+            {
+                const [mx, my] = toMap(t.x, t.z);
+                mCtx.fillRect(mx - 1, my - 1, 3, 3);
+            }
+
+            // Diamonds
+            mCtx.fillStyle = '#00e5ff';
+            for (const d of diamonds)
+            {
+                const [mx, my] = toMap(d.position.x, d.position.z);
+                mCtx.fillRect(mx, my, 2, 2);
+            }
+
+            // Sheep
+            mCtx.fillStyle = '#ffffff';
+            for (const a of animals)
+            {
+                const [mx, my] = toMap(a.position.x, a.position.z);
+                mCtx.fillRect(mx - 1, my - 1, 3, 3);
+            }
+
+            // Enemies
+            for (const e of enemies)
+            {
+                mCtx.fillStyle = e.isBoss ? '#ff0000' : '#00ff00';
+                const [mx, my] = toMap(e.position.x, e.position.z);
+                const s = e.isBoss ? 4 : 2;
+                mCtx.fillRect(mx - s / 2, my - s / 2, s, s);
+            }
+
+            // Mines
+            mCtx.fillStyle = '#ff4400';
+            for (const mn of mines) {
+                const [mx, my] = toMap(mn.position.x, mn.position.z);
+                mCtx.fillRect(mx - 1, my - 1, 3, 3);
+            }
+
+            // Player (white dot with direction indicator)
+            const [px, py] = toMap(player.position.x, player.position.z);
+            mCtx.fillStyle = '#ffff00';
+            mCtx.beginPath();
+            mCtx.arc(px, py, 3, 0, Math.PI * 2);
+            mCtx.fill();
+
+            // Player direction line
+            const dx = Math.sin(yaw) * -8;
+            const dz = Math.cos(yaw) * -8;
+            mCtx.strokeStyle = '#ffff00';
+            mCtx.lineWidth = 1.5;
+            mCtx.beginPath();
+            mCtx.moveTo(px, py);
+            mCtx.lineTo(px + dx * scale * (FENCE_LIMIT * 2 / 150) * 10, py + dz * scale * (FENCE_LIMIT * 2 / 150) * 10);
+            mCtx.stroke();
+        }
+
+
+        /* ============================================= */
+        /*  MAIN GAME LOOP                               */
+        /* ============================================= */
+        let lastTime = performance.now();
+        const _forward = new THREE.Vector3();
+        const _right = new THREE.Vector3();
+        const _dir = new THREE.Vector3();
+        const _next = new THREE.Vector3();
+        const _tv = new THREE.Vector3();
+        const _hitVec = new THREE.Vector3();
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+            if (gameOver) { renderer.render(scene, camera); return; }
+
+            const now = performance.now();
+            const dt = Math.min((now - lastTime) / 16.67, 3); // cap at 3x to prevent freeze cascades
+            lastTime = now;
+
+            /* DAY-NIGHT CYCLE */
+            dayTime += dt / (DAY_DURATION * 60);
+            if (dayTime > 1) dayTime -= 1;
+            const sunAngle = dayTime * Math.PI * 2;
+            const sunY = Math.sin(sunAngle);
+            const sunX = Math.cos(sunAngle);
+            sun.position.set(sunX * 100, Math.max(sunY * 100, 5), 20);
+            sunMesh.position.copy(sun.position).normalize().multiplyScalar(400);
+
+            // Adjust lighting based on time
+            const dayFactor = Math.max(0.15, (sunY + 1) / 2);
+            sun.intensity = dayFactor * 0.9;
+            scene.fog.color.setHSL(0.58, 0.3, dayFactor * 0.5);
+            renderer.setClearColor(scene.fog.color);
+
+            // Sky tint
+            skyMat.color.setHSL(0.6, 0.3, dayFactor * 0.6 + 0.15);
+
+            /* SPRINT & STAMINA */
+            let wantsSprint = keys["shift"] && stamina > 0;
+            let isMoving = keys["w"] || keys["s"] || keys["a"] || keys["d"];
+            let speed = 0.25;
+
+            if (wantsSprint && isMoving)
+            {
+                speed = 0.45;
+                stamina = Math.max(0, stamina - 1.5 * dt);
+            } else if (isMoving)
+            {
+                stamina = Math.min(100, stamina + 0.4 * dt);
+            } else
+            {
+                stamina = Math.min(100, stamina + 0.8 * dt);
+            }
+            if (speedBoostTimer > 0) speed *= 1.6;
+            updateStamina();
+
+            /* FOOTSTEPS */
+            if (isMoving && onGround)
+            {
+                footstepTimer += dt;
+                if (footstepTimer > (wantsSprint ? 8 : 12))
+                {
+                    playFootstep();
+                    footstepTimer = 0;
+                }
+            } else
+            {
+                footstepTimer = 0;
+            }
+
+            /* MOVEMENT */
+            _forward.set(-Math.sin(yaw), 0, -Math.cos(yaw));
+            _right.set(Math.cos(yaw), 0, -Math.sin(yaw));
+
+            _dir.set(0, 0, 0);
+            if (keys["w"]) _dir.add(_forward);
+            if (keys["s"]) _dir.sub(_forward);
+            if (keys["d"]) _dir.add(_right);
+            if (keys["a"]) _dir.sub(_right);
+            _dir.normalize();
+
+            _next.copy(player.position).addScaledVector(_dir, speed * dt);
+
+            let blocked = false;
+            for (const t of trees)
+                if (_next.distanceTo(_tv.set(t.x, 0, t.z)) < 3) { blocked = true; break; }
+            if (!blocked) for (const a of animals)
+                if (_next.distanceTo(a.position) < 2.5) { blocked = true; break; }
+
+            if (_next.x > FENCE_LIMIT - 1.5) { _next.x = FENCE_LIMIT - 1.5; blocked = false; }
+            if (_next.x < -FENCE_LIMIT + 1.5) { _next.x = -FENCE_LIMIT + 1.5; blocked = false; }
+            if (_next.z > FENCE_LIMIT - 1.5) { _next.z = FENCE_LIMIT - 1.5; blocked = false; }
+            if (_next.z < -FENCE_LIMIT + 1.5) { _next.z = -FENCE_LIMIT + 1.5; blocked = false; }
+
+            if (!blocked) player.position.copy(_next);
+
+            /* JUMP */
+            if (keys[" "] && onGround) { velY = 0.4; onGround = false; }
+            velY -= 0.015 * dt;
+            player.position.y += velY * dt;
+            if (player.position.y < 0) { player.position.y = 0; onGround = true; }
+
+            /* SHEEP WANDERING AI */
+            for (const s of animals)
+            {
+                if (s.pauseTimer > 0)
+                {
+                    s.pauseTimer -= dt;
+                    s.isMoving = false;
+                } else if (s.wanderTimer > 0)
+                {
+                    s.wanderTimer -= dt;
+                    s.isMoving = true;
+                    const mx = Math.sin(s.wanderAngle) * s.wanderSpeed * dt;
+                    const mz = Math.cos(s.wanderAngle) * s.wanderSpeed * dt;
+                    s.position.x += mx;
+                    s.position.z += mz;
+                    s.rotation.y = -s.wanderAngle;
+
+                    // Leg animation
+                    if (s.legs)
+                    {
+                        const legSwing = Math.sin(Date.now() * 0.008) * 0.3;
+                        s.legs[0].rotation.x = legSwing;
+                        s.legs[1].rotation.x = -legSwing;
+                        s.legs[2].rotation.x = -legSwing;
+                        s.legs[3].rotation.x = legSwing;
+                    }
+
+                    // Keep in bounds
+                    s.position.x = Math.max(-FENCE_LIMIT + 5, Math.min(FENCE_LIMIT - 5, s.position.x));
+                    s.position.z = Math.max(-FENCE_LIMIT + 5, Math.min(FENCE_LIMIT - 5, s.position.z));
+
+                    if (s.wanderTimer <= 0)
+                    {
+                        s.pauseTimer = Math.random() * 150 + 50;
+                    }
+                } else
+                {
+                    // Pick new direction
+                    s.wanderAngle = Math.random() * Math.PI * 2;
+                    s.wanderTimer = Math.random() * 200 + 80;
+                }
+            }
+
+            /* FLYING DINOSAURS */
+            for (const b of birds)
+            {
+                b.translateZ(b.flySpeed * dt);
+                let wingAngle = Math.sin(Date.now() * b.wingSpeed) * 0.6;
+                b.leftWing.rotation.z = wingAngle;
+                b.rightWing.rotation.z = -wingAngle;
+                if (b.position.x > FENCE_LIMIT + 20) b.position.x = -FENCE_LIMIT - 20;
+                if (b.position.x < -FENCE_LIMIT - 20) b.position.x = FENCE_LIMIT + 20;
+                if (b.position.z > FENCE_LIMIT + 20) b.position.z = -FENCE_LIMIT - 20;
+                if (b.position.z < -FENCE_LIMIT - 20) b.position.z = FENCE_LIMIT + 20;
+            }
+
+            /* BULLETS */
+            for (let i = bullets.length - 1; i >= 0; i--)
+            {
+                const blt = bullets[i];
+                blt.position.addScaledVector(blt.velocity, dt);
+                let bulletDestroyed = false;
+
+                // vs enemies
+                for (let j = enemies.length - 1; j >= 0; j--)
+                {
+                    const nmy = enemies[j];
+                    const hitRadius = nmy.isBoss ? 2.2 : 1.4;
+                    const hitY = nmy.isBoss ? 2.5 : 1.3;
+                    _hitVec.set(nmy.position.x, hitY, nmy.position.z);
+
+                    if (blt.position.distanceTo(_hitVec) < hitRadius)
+                    {
+                        nmy.hp--;
+
+                        if (nmy.hp <= 0)
+                        {
+                            // Enemy killed — combo system
+                            comboCount++;
+                            comboTimer = 120; // ~2 seconds to chain
+                            const baseScore = nmy.isBoss ? 500 : 100;
+                            const comboMulti = Math.min(comboCount, 5);
+                            const earnedScore = baseScore * comboMulti;
+
+                            spawnParticles(nmy.position.clone().setY(1.5),
+                                nmy.isBoss ? 0xff0000 : 0x00ff00, nmy.isBoss ? 25 : 12, 0.3, 35);
+
+                            let scoreText = "+" + earnedScore;
+                            if (comboMulti > 1) scoreText += " x" + comboMulti;
+                            spawnFloatingText(nmy.position, scoreText,
+                                comboMulti >= 3 ? "#ffd700" : (nmy.isBoss ? "#ff4444" : "#44ff44"));
+
+                            score += earnedScore;
+                            kills++;
+                            updateStats();
+                            playKill();
+
+                            scene.remove(nmy);
+                            enemies.splice(j, 1);
+
+                            if (!nmy.isBoss)
+                            {
+                                enemy((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+                            }
+                        } else
+                        {
+                            // Boss damaged but alive
+                            spawnParticles(blt.position.clone(), 0xff6600, 6, 0.15, 20);
+                            spawnFloatingText(nmy.position, "-1", "#ffaa00");
+                            playHit();
+                        }
+
+                        scene.remove(blt);
+                        bullets.splice(i, 1);
+                        bulletDestroyed = true;
+                        break;
+                    }
+                }
+
+                if (bulletDestroyed) continue;
+
+                // vs sheep
+                for (let k = animals.length - 1; k >= 0; k--)
+                {
+                    const shp = animals[k];
+                    _hitVec.set(shp.position.x, 1.0, shp.position.z);
+                    if (blt.position.distanceTo(_hitVec) < 1.6)
+                    {
+                        const deadX = shp.position.x;
+                        const deadZ = shp.position.z;
+                        spawnParticles(shp.position.clone().setY(1), 0xffffff, 10, 0.25, 30);
+                        scene.remove(shp);
+                        animals.splice(k, 1);
+                        scene.remove(blt);
+                        bullets.splice(i, 1);
+                        bulletDestroyed = true;
+                        spawnMeat(deadX, deadZ);
+                        playKill();
+                        score += 25;
+                        updateStats();
+                        setTimeout(() =>
+                        {
+                            if (!gameOver) sheep((Math.random() - 0.5) * 240, (Math.random() - 0.5) * 240);
+                        }, 6000);
+                        break;
+                    }
+                }
+
+                if (bulletDestroyed) continue;
+
+                // vs birds (pterodactyls)
+                for (let b = birds.length - 1; b >= 0; b--) {
+                    const bird = birds[b];
+                    if (blt.position.distanceTo(bird.position) < 2.0) {
+                        // Bird killed! Drop golden feather
+                        spawnParticles(bird.position.clone(), 0x8b4513, 12, 0.3, 30);
+                        spawnFloatingText(bird.position, "+200", "#ffd700");
+                        playBirdSquawk();
+                        spawnFeather(bird.position.x, bird.position.y, bird.position.z);
+                        score += 200;
+                        kills++;
+                        updateStats();
+
+                        scene.remove(bird);
+                        birds.splice(b, 1);
+                        scene.remove(blt);
+                        bullets.splice(i, 1);
+                        bulletDestroyed = true;
+
+                        // Respawn bird after delay
+                        setTimeout(() => { if (!gameOver) spawnDinosaur(); }, 8000);
+                        break;
+                    }
+                }
+
+                if (bulletDestroyed) continue;
+
+                if (Math.abs(blt.position.x) > FENCE_LIMIT || Math.abs(blt.position.z) > FENCE_LIMIT || Math.abs(blt.position.y) > 100)
+                {
+                    scene.remove(blt);
+                    bullets.splice(i, 1);
+                }
+            }
+
+            /* ENEMY AI & ANIMATION */
+            for (const e of enemies)
+            {
+                let dx = player.position.x - e.position.x;
+                let dz = player.position.z - e.position.z;
+                let d = Math.sqrt(dx * dx + dz * dz);
+                const aggroRange = e.isBoss ? 80 : 40;
+
+                if (d < aggroRange)
+                {
+                    const spd = e.speed * dt;
+                    e.position.x += (dx / d) * spd;
+                    e.position.z += (dz / d) * spd;
+
+                    // Face player
+                    e.rotation.y = Math.atan2(dx, dz);
+
+                    // Walk animation
+                    e.walkCycle += 0.1 * dt;
+                    const swing = Math.sin(e.walkCycle) * 0.5;
+                    if (e.lArm) { e.lArm.rotation.x = swing; e.rArm.rotation.x = -swing; }
+                    if (e.lLeg) { e.lLeg.rotation.x = -swing; e.rLeg.rotation.x = swing; }
+                }
+
+                const dmg = e.isBoss ? 20 : 10;
+                const hitCooldown = e.isBoss ? 600 : 800;
+
+                if (!gameOver && d < (e.isBoss ? 3 : 2) && Date.now() - lastHit > hitCooldown)
+                {
+                    hp -= dmg;
+                    lastHit = Date.now();
+                    updateHP();
+                    triggerHitEffect();
+                    playHit();
+                    spawnFloatingText(player.position, `-${dmg}`, "#ff0000");
+                }
+            }
+
+            /* HP PICKUPS */
+            for (let i = pickups.length - 1; i >= 0; i--)
+            {
+                const p = pickups[i];
+                p.position.y = p.baseY + Math.sin(Date.now() * p.speed) * 0.3;
+                p.children[0].rotation.y += 0.02 * dt;
+                if (player.position.distanceTo(p.position) < 2)
+                {
+                    hp = Math.min(100, hp + 20);
+                    updateHP();
+                    spawnParticles(p.position.clone(), 0xff3b3b, 8, 0.2, 25);
+                    spawnFloatingText(p.position, "+20 HP", "#44ff44");
+                    playPickup();
+                    scene.remove(p);
+                    pickups.splice(i, 1);
+                }
+            }
+
+            /* MEAT DROPS */
+            for (let i = meats.length - 1; i >= 0; i--)
+            {
+                const m = meats[i];
+                m.position.y = m.baseY + Math.sin(Date.now() * m.speed) * 0.2;
+                m.children[0].rotation.y += 0.03 * dt;
+                if (player.position.distanceTo(m.position) < 2.2)
+                {
+                    hp = Math.min(100, hp + 15);
+                    updateHP();
+                    spawnParticles(m.position.clone(), 0xc44d4d, 6, 0.15, 20);
+                    spawnFloatingText(m.position, "+15 HP", "#ff7373");
+                    playPickup();
+                    scene.remove(m);
+                    meats.splice(i, 1);
+                }
+            }
+
+            /* DIAMONDS */
+            for (let i = diamonds.length - 1; i >= 0; i--)
+            {
+                const d = diamonds[i];
+                d.position.y = d.baseY + Math.sin(Date.now() * d.speed) * 0.3;
+                d.children[0].rotation.y += 0.03 * dt;
+                if (player.position.distanceTo(d.position) < 2)
+                {
+                    diamondCount++;
+                    score += 50;
+                    if (diamondCount % 10 === 0) nextLevel();
+                    updateDiamonds();
+                    updateStats();
+                    spawnParticles(d.position.clone(), 0x00ffff, 8, 0.2, 25);
+                    playPickup();
+                    scene.remove(d);
+                    diamonds.splice(i, 1);
+                }
+            }
+
+            /* MINES — check enemy proximity and explode */
+            for (let i = mines.length - 1; i >= 0; i--) {
+                const mine = mines[i];
+                // Blink the red light
+                mine.blinkTimer += dt;
+                if (mine.lightMesh) {
+                    mine.lightMesh.visible = Math.sin(mine.blinkTimer * 0.15) > 0;
+                }
+                // Check all enemies
+                let exploded = false;
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const e = enemies[j];
+                    const dx = e.position.x - mine.position.x;
+                    const dz = e.position.z - mine.position.z;
+                    const dist = Math.sqrt(dx * dx + dz * dz);
+                    if (dist < 2.5) {
+                        exploded = true;
+                        break;
+                    }
+                }
+                if (exploded) {
+                    // BOOM — AOE damage to all enemies within blast radius
+                    const blastRadius = 8;
+                    spawnParticles(mine.position.clone().setY(1), 0xff6600, 20, 0.5, 30);
+                    spawnParticles(mine.position.clone().setY(0.5), 0xffff00, 10, 0.4, 25);
+                    playExplosion();
+                    shakeTime = 20;
+
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        const e = enemies[j];
+                        const dx = e.position.x - mine.position.x;
+                        const dz = e.position.z - mine.position.z;
+                        const dist = Math.sqrt(dx * dx + dz * dz);
+                        if (dist < blastRadius) {
+                            const dmg = e.isBoss ? 3 : 999; // kills normal, damages boss
+                            e.hp -= dmg;
+                            if (e.hp <= 0) {
+                                spawnParticles(e.position.clone().setY(1.5),
+                                    e.isBoss ? 0xff0000 : 0x00ff00, e.isBoss ? 25 : 12, 0.3, 35);
+                                spawnFloatingText(e.position, e.isBoss ? "+500" : "+100",
+                                    e.isBoss ? "#ff4444" : "#44ff44");
+                                score += e.isBoss ? 500 : 100;
+                                kills++;
+                                scene.remove(e);
+                                enemies.splice(j, 1);
+                                if (!e.isBoss) enemy((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+                            } else {
+                                spawnFloatingText(e.position, "-3", "#ffaa00");
+                            }
+                        }
+                    }
+                    updateStats();
+                    scene.remove(mine);
+                    mines.splice(i, 1);
+                }
+            }
+
+            /* GOLDEN FEATHERS (falling from killed birds) */
+            for (let i = feathers.length - 1; i >= 0; i--) {
+                const f = feathers[i];
+                f.life -= dt;
+                if (!f.grounded) {
+                    f.position.y -= f.fallSpeed * dt;
+                    f.children[0].rotation.y += 0.05 * dt;
+                    f.children[0].rotation.x = Math.sin(Date.now() * 0.003) * 0.3;
+                    if (f.position.y <= 1.2) {
+                        f.position.y = 1.2;
+                        f.grounded = true;
+                        f.baseY = 1.2;
+                    }
+                } else {
+                    f.position.y = f.baseY + Math.sin(Date.now() * f.speed) * 0.2;
+                    f.children[0].rotation.y += 0.03 * dt;
+                }
+                if (f.life <= 0) {
+                    scene.remove(f); feathers.splice(i, 1); continue;
+                }
+                if (player.position.distanceTo(f.position) < 2.2) {
+                    speedBoostTimer = 300; // ~5 seconds of speed boost
+                    spawnParticles(f.position.clone(), 0xffd700, 10, 0.25, 30);
+                    spawnFloatingText(f.position, "SPEED BOOST!", "#ffd700");
+                    playPickup();
+                    scene.remove(f);
+                    feathers.splice(i, 1);
+                }
+            }
+
+            /* MINE PICKUPS */
+            for (let i = minePickups.length - 1; i >= 0; i--) {
+                const mp = minePickups[i];
+                mp.position.y = mp.baseY + Math.sin(Date.now() * mp.speed) * 0.2;
+                mp.children[0].rotation.y += 0.02 * dt;
+                if (player.position.distanceTo(mp.position) < 2) {
+                    mineCount += 2;
+                    spawnParticles(mp.position.clone(), 0x886644, 6, 0.15, 20);
+                    spawnFloatingText(mp.position, "+2 Mines", "#ff8844");
+                    playPickup();
+                    updateStats();
+                    scene.remove(mp);
+                    minePickups.splice(i, 1);
+                    // Respawn a mine pickup elsewhere after delay
+                    setTimeout(() => {
+                        if (!gameOver) spawnMinePickup((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
+                    }, 15000);
+                }
+            }
+
+            /* COMBO TIMER */
+            if (comboTimer > 0) {
+                comboTimer -= dt;
+                if (comboTimer <= 0) comboCount = 0;
+            }
+
+            /* SPEED BOOST COUNTDOWN */
+            if (speedBoostTimer > 0) speedBoostTimer -= dt;
+
+            /* PARTICLES & FLOATING TEXT */
+            updateParticles();
+            updateFloatingTexts();
+
+            /* CAMERA (3rd person with pitch) */
+            const camDist = 6;
+            const camHeight = 3;
+            const offsetX = Math.sin(yaw) * camDist * Math.cos(pitch);
+            const offsetZ = Math.cos(yaw) * camDist * Math.cos(pitch);
+            const offsetY = camHeight + camDist * Math.sin(pitch) * 0.5;
+
+            let shakeX = 0, shakeY = 0, shakeZ = 0;
+            if (shakeTime > 0)
+            {
+                shakeX = (Math.random() - 0.5) * 0.3;
+                shakeY = (Math.random() - 0.5) * 0.3;
+                shakeZ = (Math.random() - 0.5) * 0.3;
+                shakeTime--;
+            }
+
+            camera.position.set(
+                player.position.x + offsetX + shakeX,
+                player.position.y + offsetY + shakeY,
+                player.position.z + offsetZ + shakeZ
+            );
+
+            // Look at point influenced by pitch
+            const lookY = player.position.y + 2 - pitch * 3;
+            camera.lookAt(player.position.x, lookY, player.position.z);
+
+            /* MINIMAP (every 3 frames for perf) */
+            if (Math.random() < 0.33) drawMinimap();
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        addEventListener("resize", () =>
+        {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+
+    </script>
+
+</body>
+
+</html>
