@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minecraft Survival ENHANCED</title>
 
     <style>
@@ -252,6 +253,105 @@
             background: #ff2222;
         }
 
+        /* MOBILE CONTROLS — hidden on desktop */
+        .mobile-controls { display: none; }
+
+        @media (hover: none) and (pointer: coarse) {
+            .mobile-controls { display: block; }
+            #info { display: none; }
+            #hud { bottom: 6px; padding: 6px 12px; gap: 8px; }
+            .bar-outer { width: 100px; height: 14px; }
+            .bar-text { font-size: 9px; }
+            .hud-bar label { font-size: 9px; }
+            #stats { font-size: 11px; top: 10px; right: 10px; }
+            #minimap { width: 100px; height: 100px; }
+            #crosshair::before { height: 14px; }
+            #crosshair::after { width: 14px; }
+        }
+
+        #joystickZone {
+            position: absolute;
+            bottom: 90px;
+            left: 20px;
+            width: 140px;
+            height: 140px;
+            z-index: 20;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(255,255,255,0.15);
+            touch-action: none;
+        }
+        #joystickKnob {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        #cameraZone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 55%;
+            height: 60%;
+            z-index: 15;
+            touch-action: none;
+        }
+        .mobile-btn {
+            position: absolute;
+            z-index: 20;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .mobile-btn:active, .mobile-btn.active {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+        }
+        #btnShoot {
+            bottom: 100px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            font-size: 16px;
+            background: rgba(255,100,0,0.2);
+            border-color: rgba(255,100,0,0.5);
+        }
+        #btnJump {
+            bottom: 100px;
+            right: 130px;
+            width: 60px;
+            height: 60px;
+        }
+        #btnMine {
+            bottom: 195px;
+            right: 35px;
+            width: 56px;
+            height: 56px;
+            font-size: 11px;
+        }
+        #btnSprint {
+            bottom: 195px;
+            right: 110px;
+            width: 56px;
+            height: 56px;
+            font-size: 11px;
+        }
+
         /* BLOOD EFFECT */
         #blood {
             position: absolute;
@@ -272,7 +372,7 @@
 
 <body>
 
-    <div id="info">WASD Move | Shift Sprint | Space Jump | Click Shoot | Q Place Mine | Shoot Birds for Speed Boost</div>
+    <div id="info">WASD Move | Shift Sprint | Space Jump | Click/F Shoot | Q Place Mine | Shoot Birds for Speed Boost</div>
 
     <div id="hud">
         <div class="hud-bar">
@@ -315,6 +415,16 @@
         <h1>GAME OVER</h1>
         <div id="deathStats"></div>
         <button id="restartBtn">RESTART</button>
+    </div>
+
+    <!-- MOBILE CONTROLS (hidden on desktop via CSS) -->
+    <div class="mobile-controls">
+        <div id="joystickZone"><div id="joystickKnob"></div></div>
+        <div id="cameraZone"></div>
+        <div class="mobile-btn" id="btnShoot">FIRE</div>
+        <div class="mobile-btn" id="btnJump">JUMP</div>
+        <div class="mobile-btn" id="btnMine">MINE</div>
+        <div class="mobile-btn" id="btnSprint">RUN</div>
     </div>
 
     <div id="blood"></div>
@@ -1225,6 +1335,10 @@
         const keys = {};
         addEventListener("keydown", e => {
             keys[e.key.toLowerCase()] = true;
+            // F to fire
+            if (e.key.toLowerCase() === 'f' && document.pointerLockElement === document.body) {
+                fireBullet();
+            }
             // Q to place mine
             if (e.key.toLowerCase() === 'q' && !gameOver && mineCount > 0 && document.pointerLockElement === document.body) {
                 mineCount--;
@@ -1241,33 +1355,167 @@
             if (document.pointerLockElement === document.body)
             {
                 yaw -= e.movementX * 0.002;
-                pitch -= e.movementY * 0.002;
+                pitch += e.movementY * 0.002;
                 pitch = Math.max(-1.2, Math.min(1.2, pitch));
             }
         });
 
+        const isMobile = ('ontouchstart' in window) && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+        function fireBullet() {
+            if (gameOver) return;
+            ensureAudio(); startAmbient();
+            const bullet = new THREE.Mesh(sharedBulletGeo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+            bullet.position.copy(player.position);
+            bullet.position.y += 1.8;
+            const targetDir = new THREE.Vector3();
+            camera.getWorldDirection(targetDir);
+            bullet.velocity = targetDir.normalize().multiplyScalar(1.4);
+            scene.add(bullet);
+            bullets.push(bullet);
+            playShoot();
+        }
+
         addEventListener("click", () =>
         {
+            if (isMobile) return; // mobile uses touch buttons
             if (document.pointerLockElement !== document.body)
             {
                 document.body.requestPointerLock();
                 startAmbient();
                 return;
             }
-            if (gameOver) return;
-
-            const bullet = new THREE.Mesh(sharedBulletGeo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
-            bullet.position.copy(player.position);
-            bullet.position.y += 1.8;
-
-            const targetDir = new THREE.Vector3();
-            camera.getWorldDirection(targetDir);
-            bullet.velocity = targetDir.normalize().multiplyScalar(1.4);
-
-            scene.add(bullet);
-            bullets.push(bullet);
-            playShoot();
+            fireBullet();
         });
+
+        /* ============================================= */
+        /*  MOBILE TOUCH CONTROLS                        */
+        /* ============================================= */
+        if (isMobile) {
+            // Prevent default touch behaviors
+            document.addEventListener('touchstart', e => {
+                if (e.target.closest('#restartBtn')) return;
+                e.preventDefault();
+            }, { passive: false });
+
+            // --- JOYSTICK ---
+            const joystickZone = document.getElementById('joystickZone');
+            const joystickKnob = document.getElementById('joystickKnob');
+            let joystickTouchId = null;
+            const joystickCenter = { x: 0, y: 0 };
+            const joystickRadius = 45;
+
+            function updateJoystickCenter() {
+                const rect = joystickZone.getBoundingClientRect();
+                joystickCenter.x = rect.left + rect.width / 2;
+                joystickCenter.y = rect.top + rect.height / 2;
+            }
+
+            joystickZone.addEventListener('touchstart', e => {
+                e.preventDefault();
+                startAmbient();
+                const t = e.changedTouches[0];
+                joystickTouchId = t.identifier;
+                updateJoystickCenter();
+                handleJoystickMove(t);
+            }, { passive: false });
+
+            joystickZone.addEventListener('touchmove', e => {
+                e.preventDefault();
+                for (const t of e.changedTouches) {
+                    if (t.identifier === joystickTouchId) handleJoystickMove(t);
+                }
+            }, { passive: false });
+
+            function joystickEnd() {
+                joystickTouchId = null;
+                joystickKnob.style.transform = 'translate(-50%, -50%)';
+                keys['w'] = false; keys['s'] = false; keys['a'] = false; keys['d'] = false;
+            }
+            joystickZone.addEventListener('touchend', joystickEnd);
+            joystickZone.addEventListener('touchcancel', joystickEnd);
+
+            function handleJoystickMove(touch) {
+                let dx = touch.clientX - joystickCenter.x;
+                let dy = touch.clientY - joystickCenter.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > joystickRadius) {
+                    dx = (dx / dist) * joystickRadius;
+                    dy = (dy / dist) * joystickRadius;
+                }
+                joystickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+                const deadzone = 12;
+                keys['w'] = dy < -deadzone;
+                keys['s'] = dy > deadzone;
+                keys['a'] = dx < -deadzone;
+                keys['d'] = dx > deadzone;
+            }
+
+            // --- CAMERA (right side touch drag) ---
+            const cameraZone = document.getElementById('cameraZone');
+            let cameraTouchId = null;
+            let lastCameraX = 0, lastCameraY = 0;
+
+            cameraZone.addEventListener('touchstart', e => {
+                e.preventDefault();
+                startAmbient();
+                const t = e.changedTouches[0];
+                cameraTouchId = t.identifier;
+                lastCameraX = t.clientX;
+                lastCameraY = t.clientY;
+            }, { passive: false });
+
+            cameraZone.addEventListener('touchmove', e => {
+                e.preventDefault();
+                for (const t of e.changedTouches) {
+                    if (t.identifier === cameraTouchId) {
+                        const dx = t.clientX - lastCameraX;
+                        const dy = t.clientY - lastCameraY;
+                        yaw -= dx * 0.004;
+                        pitch -= dy * 0.004;
+                        pitch = Math.max(-1.2, Math.min(1.2, pitch));
+                        lastCameraX = t.clientX;
+                        lastCameraY = t.clientY;
+                    }
+                }
+            }, { passive: false });
+
+            cameraZone.addEventListener('touchend', () => { cameraTouchId = null; });
+            cameraZone.addEventListener('touchcancel', () => { cameraTouchId = null; });
+
+            // --- BUTTONS ---
+            function btnEvents(id, onDown, onUp) {
+                const el = document.getElementById(id);
+                el.addEventListener('touchstart', e => { e.preventDefault(); startAmbient(); onDown(); el.classList.add('active'); }, { passive: false });
+                el.addEventListener('touchend', e => { e.preventDefault(); if (onUp) onUp(); el.classList.remove('active'); }, { passive: false });
+                el.addEventListener('touchcancel', e => { if (onUp) onUp(); el.classList.remove('active'); });
+            }
+
+            // Shoot — fire on each tap
+            btnEvents('btnShoot', () => fireBullet(), null);
+
+            // Jump — hold
+            btnEvents('btnJump', () => { keys[' '] = true; }, () => { keys[' '] = false; });
+
+            // Sprint — toggle
+            let sprintToggle = false;
+            btnEvents('btnSprint', () => {
+                sprintToggle = !sprintToggle;
+                keys['shift'] = sprintToggle;
+                document.getElementById('btnSprint').classList.toggle('active', sprintToggle);
+            }, null);
+
+            // Mine — single press
+            btnEvents('btnMine', () => {
+                if (!gameOver && mineCount > 0) {
+                    mineCount--;
+                    placeMine(player.position.x, player.position.z);
+                    playMinePlaced();
+                    updateStats();
+                }
+            }, null);
+        }
 
 
         /* ============================================= */
