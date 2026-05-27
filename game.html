@@ -254,19 +254,56 @@
         }
 
         /* MOBILE CONTROLS — hidden on desktop */
-        .mobile-controls { display: none; }
+        .mobile-controls {
+            display: none;
+        }
 
         @media (hover: none) and (pointer: coarse) {
-            .mobile-controls { display: block; }
-            #info { display: none; }
-            #hud { bottom: 6px; padding: 6px 12px; gap: 8px; }
-            .bar-outer { width: 100px; height: 14px; }
-            .bar-text { font-size: 9px; }
-            .hud-bar label { font-size: 9px; }
-            #stats { font-size: 11px; top: 10px; right: 10px; }
-            #minimap { width: 100px; height: 100px; }
-            #crosshair::before { height: 14px; }
-            #crosshair::after { width: 14px; }
+            .mobile-controls {
+                display: block;
+            }
+
+            #info {
+                display: none;
+            }
+
+            #hud {
+                bottom: 6px;
+                padding: 6px 12px;
+                gap: 8px;
+            }
+
+            .bar-outer {
+                width: 100px;
+                height: 14px;
+            }
+
+            .bar-text {
+                font-size: 9px;
+            }
+
+            .hud-bar label {
+                font-size: 9px;
+            }
+
+            #stats {
+                font-size: 11px;
+                top: 10px;
+                right: 10px;
+            }
+
+            #minimap {
+                width: 100px;
+                height: 100px;
+            }
+
+            #crosshair::before {
+                height: 14px;
+            }
+
+            #crosshair::after {
+                width: 14px;
+            }
         }
 
         #joystickZone {
@@ -277,22 +314,24 @@
             height: 140px;
             z-index: 20;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             touch-action: none;
         }
+
         #joystickKnob {
             position: absolute;
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            border: 2px solid rgba(255,255,255,0.4);
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
         }
+
         #cameraZone {
             position: absolute;
             top: 0;
@@ -302,13 +341,14 @@
             z-index: 15;
             touch-action: none;
         }
+
         .mobile-btn {
             position: absolute;
             z-index: 20;
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.85);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 13px;
             font-weight: bold;
             display: flex;
@@ -318,25 +358,30 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        .mobile-btn:active, .mobile-btn.active {
-            background: rgba(255,255,255,0.25);
-            border-color: rgba(255,255,255,0.5);
+
+        .mobile-btn:active,
+        .mobile-btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
         }
+
         #btnShoot {
             bottom: 100px;
             right: 30px;
             width: 80px;
             height: 80px;
             font-size: 16px;
-            background: rgba(255,100,0,0.2);
-            border-color: rgba(255,100,0,0.5);
+            background: rgba(255, 100, 0, 0.2);
+            border-color: rgba(255, 100, 0, 0.5);
         }
+
         #btnJump {
             bottom: 100px;
             right: 130px;
             width: 60px;
             height: 60px;
         }
+
         #btnMine {
             bottom: 195px;
             right: 35px;
@@ -344,6 +389,7 @@
             height: 56px;
             font-size: 11px;
         }
+
         #btnSprint {
             bottom: 195px;
             right: 110px;
@@ -372,7 +418,8 @@
 
 <body>
 
-    <div id="info">WASD Move | Shift Sprint | Space Jump | Click/F Shoot | Q Place Mine | Shoot Birds for Speed Boost</div>
+    <div id="info">WASD Move | Shift Sprint | Space Jump | Click/F Shoot | Q Place Mine | Shoot Birds for Speed Boost
+    </div>
 
     <div id="hud">
         <div class="hud-bar">
@@ -419,7 +466,9 @@
 
     <!-- MOBILE CONTROLS (hidden on desktop via CSS) -->
     <div class="mobile-controls">
-        <div id="joystickZone"><div id="joystickKnob"></div></div>
+        <div id="joystickZone">
+            <div id="joystickKnob"></div>
+        </div>
         <div id="cameraZone"></div>
         <div class="mobile-btn" id="btnShoot">FIRE</div>
         <div class="mobile-btn" id="btnJump">JUMP</div>
@@ -563,7 +612,8 @@
             o.start(); o.stop(audioCtx.currentTime + 0.5);
         }
 
-        function playExplosion() {
+        function playExplosion()
+        {
             ensureAudio();
             // Low boom
             const o = audioCtx.createOscillator();
@@ -587,7 +637,8 @@
             src.start();
         }
 
-        function playBirdSquawk() {
+        function playBirdSquawk()
+        {
             ensureAudio();
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
@@ -601,7 +652,8 @@
             o.start(); o.stop(audioCtx.currentTime + 0.15);
         }
 
-        function playMinePlaced() {
+        function playMinePlaced()
+        {
             ensureAudio();
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
@@ -718,12 +770,15 @@
         const sharedBulletGeo = new THREE.SphereGeometry(0.15, 6, 6);
 
         /* Returns a random position within range that doesn't overlap any tree */
-        function safeRandomPos(range) {
-            for (let attempt = 0; attempt < 30; attempt++) {
+        function safeRandomPos(range)
+        {
+            for (let attempt = 0; attempt < 30; attempt++)
+            {
                 const x = (Math.random() - 0.5) * range;
                 const z = (Math.random() - 0.5) * range;
                 let tooClose = false;
-                for (const t of trees) {
+                for (const t of trees)
+                {
                     const dx = x - t.x, dz = z - t.z;
                     if (dx * dx + dz * dz < 16) { tooClose = true; break; } // radius 4
                 }
@@ -1237,7 +1292,7 @@
             pickups.push(g);
         }
         for (let i = 0; i < 15; i++)
-            { const p = safeRandomPos(260); pickup(p.x, p.z); }
+        { const p = safeRandomPos(260); pickup(p.x, p.z); }
 
         /* DIAMONDS */
         function diamond(x, z)
@@ -1260,13 +1315,14 @@
             diamonds.push(container);
         }
         for (let i = 0; i < 30; i++)
-            { const p = safeRandomPos(260); diamond(p.x, p.z); }
+        { const p = safeRandomPos(260); diamond(p.x, p.z); }
 
         /* MINES (player-placed) */
         const sharedMineGeo = new THREE.BoxGeometry(0.8, 0.3, 0.8);
         const sharedMineSpikeGeo = new THREE.BoxGeometry(0.15, 0.4, 0.15);
 
-        function placeMine(x, z) {
+        function placeMine(x, z)
+        {
             const g = new THREE.Group();
             const base = new THREE.Mesh(sharedMineGeo, new THREE.MeshBasicMaterial({ color: 0x555555 }));
             base.position.y = 0.15;
@@ -1278,7 +1334,8 @@
             g.add(light);
             g.lightMesh = light;
             // Corner spikes
-            for (let c = 0; c < 4; c++) {
+            for (let c = 0; c < 4; c++)
+            {
                 const spike = new THREE.Mesh(sharedMineSpikeGeo, new THREE.MeshBasicMaterial({ color: 0x888888 }));
                 spike.position.set((c < 2 ? 0.3 : -0.3), 0.2, (c % 2 === 0 ? 0.3 : -0.3));
                 g.add(spike);
@@ -1290,7 +1347,8 @@
         }
 
         /* GOLDEN FEATHER (speed boost pickup from killed birds) */
-        function spawnFeather(x, y, z) {
+        function spawnFeather(x, y, z)
+        {
             const g = new THREE.Group();
             const feather = new THREE.Mesh(
                 new THREE.BoxGeometry(0.6, 0.1, 0.3),
@@ -1312,7 +1370,8 @@
         }
 
         /* MINE PICKUPS (collectable ammo for mines) */
-        function spawnMinePickup(x, z) {
+        function spawnMinePickup(x, z)
+        {
             const g = new THREE.Group();
             const crate = new THREE.Mesh(
                 new THREE.BoxGeometry(0.7, 0.7, 0.7),
@@ -1334,7 +1393,7 @@
             minePickups.push(g);
         }
         for (let i = 0; i < 8; i++)
-            { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
+        { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
 
 
         /* ============================================= */
@@ -1348,14 +1407,17 @@
         /*  INPUT                                        */
         /* ============================================= */
         const keys = {};
-        addEventListener("keydown", e => {
+        addEventListener("keydown", e =>
+        {
             keys[e.key.toLowerCase()] = true;
             // F to fire
-            if (e.key.toLowerCase() === 'f' && document.pointerLockElement === document.body) {
+            if (e.key.toLowerCase() === 'f' && document.pointerLockElement === document.body)
+            {
                 fireBullet();
             }
             // Q to place mine
-            if (e.key.toLowerCase() === 'q' && !gameOver && mineCount > 0 && document.pointerLockElement === document.body) {
+            if (e.key.toLowerCase() === 'q' && !gameOver && mineCount > 0 && document.pointerLockElement === document.body)
+            {
                 mineCount--;
                 placeMine(player.position.x, player.position.z);
                 playMinePlaced();
@@ -1377,7 +1439,8 @@
 
         const isMobile = ('ontouchstart' in window) && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
-        function fireBullet() {
+        function fireBullet()
+        {
             if (gameOver) return;
             ensureAudio(); startAmbient();
             const bullet = new THREE.Mesh(sharedBulletGeo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
@@ -1406,9 +1469,11 @@
         /* ============================================= */
         /*  MOBILE TOUCH CONTROLS                        */
         /* ============================================= */
-        if (isMobile) {
+        if (isMobile)
+        {
             // Prevent default touch behaviors
-            document.addEventListener('touchstart', e => {
+            document.addEventListener('touchstart', e =>
+            {
                 if (e.target.closest('#restartBtn')) return;
                 e.preventDefault();
             }, { passive: false });
@@ -1420,13 +1485,15 @@
             const joystickCenter = { x: 0, y: 0 };
             const joystickRadius = 45;
 
-            function updateJoystickCenter() {
+            function updateJoystickCenter()
+            {
                 const rect = joystickZone.getBoundingClientRect();
                 joystickCenter.x = rect.left + rect.width / 2;
                 joystickCenter.y = rect.top + rect.height / 2;
             }
 
-            joystickZone.addEventListener('touchstart', e => {
+            joystickZone.addEventListener('touchstart', e =>
+            {
                 e.preventDefault();
                 startAmbient();
                 const t = e.changedTouches[0];
@@ -1435,14 +1502,17 @@
                 handleJoystickMove(t);
             }, { passive: false });
 
-            joystickZone.addEventListener('touchmove', e => {
+            joystickZone.addEventListener('touchmove', e =>
+            {
                 e.preventDefault();
-                for (const t of e.changedTouches) {
+                for (const t of e.changedTouches)
+                {
                     if (t.identifier === joystickTouchId) handleJoystickMove(t);
                 }
             }, { passive: false });
 
-            function joystickEnd() {
+            function joystickEnd()
+            {
                 joystickTouchId = null;
                 joystickKnob.style.transform = 'translate(-50%, -50%)';
                 keys['w'] = false; keys['s'] = false; keys['a'] = false; keys['d'] = false;
@@ -1450,11 +1520,13 @@
             joystickZone.addEventListener('touchend', joystickEnd);
             joystickZone.addEventListener('touchcancel', joystickEnd);
 
-            function handleJoystickMove(touch) {
+            function handleJoystickMove(touch)
+            {
                 let dx = touch.clientX - joystickCenter.x;
                 let dy = touch.clientY - joystickCenter.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist > joystickRadius) {
+                if (dist > joystickRadius)
+                {
                     dx = (dx / dist) * joystickRadius;
                     dy = (dy / dist) * joystickRadius;
                 }
@@ -1472,7 +1544,8 @@
             let cameraTouchId = null;
             let lastCameraX = 0, lastCameraY = 0;
 
-            cameraZone.addEventListener('touchstart', e => {
+            cameraZone.addEventListener('touchstart', e =>
+            {
                 e.preventDefault();
                 startAmbient();
                 const t = e.changedTouches[0];
@@ -1481,10 +1554,13 @@
                 lastCameraY = t.clientY;
             }, { passive: false });
 
-            cameraZone.addEventListener('touchmove', e => {
+            cameraZone.addEventListener('touchmove', e =>
+            {
                 e.preventDefault();
-                for (const t of e.changedTouches) {
-                    if (t.identifier === cameraTouchId) {
+                for (const t of e.changedTouches)
+                {
+                    if (t.identifier === cameraTouchId)
+                    {
                         const dx = t.clientX - lastCameraX;
                         const dy = t.clientY - lastCameraY;
                         yaw -= dx * 0.004;
@@ -1500,7 +1576,8 @@
             cameraZone.addEventListener('touchcancel', () => { cameraTouchId = null; });
 
             // --- BUTTONS ---
-            function btnEvents(id, onDown, onUp) {
+            function btnEvents(id, onDown, onUp)
+            {
                 const el = document.getElementById(id);
                 el.addEventListener('touchstart', e => { e.preventDefault(); startAmbient(); onDown(); el.classList.add('active'); }, { passive: false });
                 el.addEventListener('touchend', e => { e.preventDefault(); if (onUp) onUp(); el.classList.remove('active'); }, { passive: false });
@@ -1515,15 +1592,18 @@
 
             // Sprint — toggle
             let sprintToggle = false;
-            btnEvents('btnSprint', () => {
+            btnEvents('btnSprint', () =>
+            {
                 sprintToggle = !sprintToggle;
                 keys['shift'] = sprintToggle;
                 document.getElementById('btnSprint').classList.toggle('active', sprintToggle);
             }, null);
 
             // Mine — single press
-            btnEvents('btnMine', () => {
-                if (!gameOver && mineCount > 0) {
+            btnEvents('btnMine', () =>
+            {
+                if (!gameOver && mineCount > 0)
+                {
                     mineCount--;
                     placeMine(player.position.x, player.position.z);
                     playMinePlaced();
@@ -1676,11 +1756,12 @@
             showWaveAnnounce("LEVEL " + level);
 
             for (let i = 0; i < Math.max(5, 18 - level * 2); i++)
-                { const p = safeRandomPos(260); diamond(p.x, p.z); }
+            { const p = safeRandomPos(260); diamond(p.x, p.z); }
 
             // Guarantee enough diamonds to reach next level
             const needed = 10 - (diamondCount % 10);
-            while (diamonds.length < needed) {
+            while (diamonds.length < needed)
+            {
                 const p = safeRandomPos(260); diamond(p.x, p.z);
             }
 
@@ -1754,7 +1835,8 @@
 
             // Mines
             mCtx.fillStyle = '#ff4400';
-            for (const mn of mines) {
+            for (const mn of mines)
+            {
                 const [mx, my] = toMap(mn.position.x, mn.position.z);
                 mCtx.fillRect(mx - 1, my - 1, 3, 3);
             }
@@ -2034,9 +2116,11 @@
                 if (bulletDestroyed) continue;
 
                 // vs birds (pterodactyls)
-                for (let b = birds.length - 1; b >= 0; b--) {
+                for (let b = birds.length - 1; b >= 0; b--)
+                {
                     const bird = birds[b];
-                    if (blt.position.distanceTo(bird.position) < 2.0) {
+                    if (blt.position.distanceTo(bird.position) < 2.0)
+                    {
                         // Bird killed! Drop golden feather
                         spawnParticles(bird.position.clone(), 0x8b4513, 12, 0.3, 30);
                         spawnFloatingText(bird.position, "+200", "#ffd700");
@@ -2162,26 +2246,31 @@
             }
 
             /* MINES — check enemy proximity and explode */
-            for (let i = mines.length - 1; i >= 0; i--) {
+            for (let i = mines.length - 1; i >= 0; i--)
+            {
                 const mine = mines[i];
                 // Blink the red light
                 mine.blinkTimer += dt;
-                if (mine.lightMesh) {
+                if (mine.lightMesh)
+                {
                     mine.lightMesh.visible = Math.sin(mine.blinkTimer * 0.15) > 0;
                 }
                 // Check all enemies
                 let exploded = false;
-                for (let j = enemies.length - 1; j >= 0; j--) {
+                for (let j = enemies.length - 1; j >= 0; j--)
+                {
                     const e = enemies[j];
                     const dx = e.position.x - mine.position.x;
                     const dz = e.position.z - mine.position.z;
                     const dist = Math.sqrt(dx * dx + dz * dz);
-                    if (dist < 2.5) {
+                    if (dist < 2.5)
+                    {
                         exploded = true;
                         break;
                     }
                 }
-                if (exploded) {
+                if (exploded)
+                {
                     // BOOM — AOE damage to all enemies within blast radius
                     const blastRadius = 8;
                     spawnParticles(mine.position.clone().setY(1), 0xff6600, 20, 0.5, 30);
@@ -2189,15 +2278,18 @@
                     playExplosion();
                     shakeTime = 20;
 
-                    for (let j = enemies.length - 1; j >= 0; j--) {
+                    for (let j = enemies.length - 1; j >= 0; j--)
+                    {
                         const e = enemies[j];
                         const dx = e.position.x - mine.position.x;
                         const dz = e.position.z - mine.position.z;
                         const dist = Math.sqrt(dx * dx + dz * dz);
-                        if (dist < blastRadius) {
+                        if (dist < blastRadius)
+                        {
                             const dmg = e.isBoss ? 3 : 999; // kills normal, damages boss
                             e.hp -= dmg;
-                            if (e.hp <= 0) {
+                            if (e.hp <= 0)
+                            {
                                 spawnParticles(e.position.clone().setY(1.5),
                                     e.isBoss ? 0xff0000 : 0x00ff00, e.isBoss ? 25 : 12, 0.3, 35);
                                 spawnFloatingText(e.position, e.isBoss ? "+500" : "+100",
@@ -2207,7 +2299,8 @@
                                 scene.remove(e);
                                 enemies.splice(j, 1);
                                 if (!e.isBoss) enemy((Math.random() - 0.5) * 260, (Math.random() - 0.5) * 260);
-                            } else {
+                            } else
+                            {
                                 spawnFloatingText(e.position, "-3", "#ffaa00");
                             }
                         }
@@ -2219,27 +2312,36 @@
             }
 
             /* GOLDEN FEATHERS (falling from killed birds) */
-            for (let i = feathers.length - 1; i >= 0; i--) {
+            for (let i = feathers.length - 1; i >= 0; i--)
+            {
                 const f = feathers[i];
                 f.life -= dt;
-                if (!f.grounded) {
+                if (!f.grounded)
+                {
                     f.position.y -= f.fallSpeed * dt;
                     f.children[0].rotation.y += 0.05 * dt;
                     f.children[0].rotation.x = Math.sin(Date.now() * 0.003) * 0.3;
-                    if (f.position.y <= 1.2) {
+                    if (f.position.y <= 1.2)
+                    {
                         f.position.y = 1.2;
                         f.grounded = true;
                         f.baseY = 1.2;
                     }
-                } else {
+                } else
+                {
                     f.position.y = f.baseY + Math.sin(Date.now() * f.speed) * 0.2;
                     f.children[0].rotation.y += 0.03 * dt;
                 }
-                if (f.life <= 0) {
+                if (f.life <= 0)
+                {
                     scene.remove(f); feathers.splice(i, 1); continue;
                 }
-                if (player.position.distanceTo(f.position) < 2.2) {
+                if (player.position.distanceTo(f.position) < 2.2)
+                {
                     speedBoostTimer = 300; // ~5 seconds of speed boost
+                    stamina = 100;
+                    staminaLocked = false;
+                    updateStamina();
                     spawnParticles(f.position.clone(), 0xffd700, 10, 0.25, 30);
                     spawnFloatingText(f.position, "SPEED BOOST!", "#ffd700");
                     playPickup();
@@ -2249,11 +2351,13 @@
             }
 
             /* MINE PICKUPS */
-            for (let i = minePickups.length - 1; i >= 0; i--) {
+            for (let i = minePickups.length - 1; i >= 0; i--)
+            {
                 const mp = minePickups[i];
                 mp.position.y = mp.baseY + Math.sin(Date.now() * mp.speed) * 0.2;
                 mp.children[0].rotation.y += 0.02 * dt;
-                if (player.position.distanceTo(mp.position) < 2) {
+                if (player.position.distanceTo(mp.position) < 2)
+                {
                     mineCount += 2;
                     spawnParticles(mp.position.clone(), 0x886644, 6, 0.15, 20);
                     spawnFloatingText(mp.position, "+2 Mines", "#ff8844");
@@ -2262,14 +2366,16 @@
                     scene.remove(mp);
                     minePickups.splice(i, 1);
                     // Respawn a mine pickup elsewhere after delay
-                    setTimeout(() => {
+                    setTimeout(() =>
+                    {
                         if (!gameOver) { const p = safeRandomPos(260); spawnMinePickup(p.x, p.z); }
                     }, 15000);
                 }
             }
 
             /* COMBO TIMER */
-            if (comboTimer > 0) {
+            if (comboTimer > 0)
+            {
                 comboTimer -= dt;
                 if (comboTimer <= 0) comboCount = 0;
             }
