@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Survival - משחק הישרדות תלת-ממדי</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0d1f0d 0%, #1a0a2e 50%, #0a1628 100%);
+            overflow: hidden;
+            padding: 40px 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 100, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 200, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.04) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: linear-gradient(90deg, #4cff4c, #00e5ff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 700px;
+            margin-bottom: 36px;
+        }
+
+        .play-btn {
+            display: inline-block;
+            padding: 18px 60px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #cc0000, #ff3333);
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 0, 0, 0.5);
+        }
+
+        /* SECTIONS */
+        .section {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: #ffffff;
+            border-right: 4px solid #4cff4c;
+            padding-right: 16px;
+        }
+
+        .section p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 16px;
+        }
+
+        /* FEATURE GRID */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 28px 24px;
+            transition: transform 0.2s, border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(76, 255, 76, 0.3);
+        }
+
+        .feature-card .icon {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+        }
+
+        /* CONTROLS TABLE */
+        .controls-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .controls-table th,
+        .controls-table td {
+            padding: 14px 18px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .controls-table th {
+            color: #4cff4c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls-table td:first-child {
+            font-weight: bold;
+            color: #ffffff;
+            width: 160px;
+        }
+
+        .controls-table td:last-child {
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .controls-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        kbd {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 2px 10px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #00e5ff;
+        }
+
+        /* ENTITIES */
+        .entity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .entity {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .entity .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .entity h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .entity p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin: 0;
+        }
+
+        /* TIPS */
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 16px;
+        }
+
+        .tips-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            padding-right: 24px;
+            position: relative;
+        }
+
+        .tips-list li::before {
+            content: '\25C6';
+            position: absolute;
+            right: 0;
+            color: #ffd700;
+        }
+
+        /* DIVIDER */
+        .divider {
+            max-width: 960px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .section {
+                padding: 40px 16px;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .play-btn {
+                padding: 14px 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Minecraft Survival</h1>
+        <p class="subtitle">
+            משחק הישרדות תלת-ממדי בסגנון מיינקראפט, ישירות בדפדפן.
+            הילחמו בזומבים, צודו כבשים, אספו יהלומים, הניחו מוקשים והתמודדו מול בוסים ענקיים!
+        </p>
+        <a href="game.html" class="play-btn">שחקו עכשיו</a>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section">
+        <h2>על המשחק</h2>
+        <p>
+            Minecraft Survival הוא משחק הישרדות תלת-ממדי שרץ ישירות בדפדפן, ללא צורך בהתקנה.
+            המשחק בנוי עם Three.js ומציע עולם פתוח עם מחזור יום ולילה, מזג אוויר דינמי,
+            ומגוון רחב של יצורים ופריטים לאיסוף.
+        </p>
+        <p>
+            המטרה: לשרוד כמה שיותר זמן, לצבור נקודות, להעלות רמות ולהביס את הבוסים שמופיעים בדרך.
+            ככל שעולים ברמות, האויבים נעשים מהירים יותר ורבים יותר!
+        </p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FEATURES -->
+    <section class="section">
+        <h2>תכונות עיקריות</h2>
+        <div class="features">
+            <div class="feature-card">
+                <span class="icon">&#x1F30D;</span>
+                <h3>עולם פתוח תלת-ממדי</h3>
+                <p>עולם מגודר עם 40 עצים מסוגים שונים (אלון, אורן, ליבנה), גדר עץ מסביב, ודינוזאורים מעופפים בשמיים.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F305;</span>
+                <h3>מחזור יום ולילה</h3>
+                <p>השמש נעה בשמיים, התאורה והערפל משתנים בהתאם. המשחק נראה אחרת בכל רגע ביום.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F52B;</span>
+                <h3>מערכת ירי ולחימה</h3>
+                <p>ירו קליעים בזומבים, כבשים ודינוזאורים. מערכת קומבו מכפילה ניקוד על הריגות רצופות (עד x5).</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F4A3;</span>
+                <h3>מוקשים</h3>
+                <p>הניחו מוקשים על הקרקע שמתפוצצים כשאויבים מתקרבים. פיצוץ עם רדיוס פגיעה רחב שהורג קבוצות שלמות!</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F985;</span>
+                <h3>ציד ציפורים</h3>
+                <p>ירו בדינוזאורים מעופפים! הם מפילים נוצת זהב שנותנת הגברת מהירות ל-5 שניות.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F411;</span>
+                <h3>ציד כבשים</h3>
+                <p>הכבשים מסתובבות בעולם עם בינה מלאכותית. ירו בהן כדי לקבל בשר שמשקם 15 נקודות חיים.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F47E;</span>
+                <h3>בוסים ענקיים</h3>
+                <p>כל 3 רמות מופיע בוס זומבי ענק עם עיניים אדומות זוהרות, חיים רבים ונזק כפול!</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F3B5;</span>
+                <h3>אודיו פרוצדורלי</h3>
+                <p>כל הצלילים נוצרים בזמן אמת: ירי, פגיעות, איסוף פריטים, צעדים, פיצוצים, ושאגת בוסים.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">&#x1F5FA;</span>
+                <h3>מפה מוקטנת</h3>
+                <p>מיני-מפה בפינה שמראה את מיקום השחקן, אויבים, יהלומים, כבשים, מוקשים ועצים.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONTROLS -->
+    <section class="section">
+        <h2>פקדים</h2>
+        <table class="controls-table">
+            <thead>
+                <tr>
+                    <th>מקש</th>
+                    <th>פעולה</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></td>
+                    <td>תנועה - קדימה, שמאלה, אחורה, ימינה</td>
+                </tr>
+                <tr>
+                    <td><kbd>Shift</kbd></td>
+                    <td>ריצה מהירה (מרוקנת סטמינה)</td>
+                </tr>
+                <tr>
+                    <td><kbd>Space</kbd></td>
+                    <td>קפיצה</td>
+                </tr>
+                <tr>
+                    <td>לחיצת עכבר שמאלית</td>
+                    <td>ירי</td>
+                </tr>
+                <tr>
+                    <td>תזוזת עכבר</td>
+                    <td>סיבוב מצלמה (מבט)</td>
+                </tr>
+                <tr>
+                    <td><kbd>Q</kbd></td>
+                    <td>הנחת מוקש על הקרקע</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ENTITIES -->
+    <section class="section">
+        <h2>יצורים ופריטים</h2>
+        <div class="entity-grid">
+            <div class="entity">
+                <span class="emoji">&#x1F9DF;</span>
+                <h4>זומבי</h4>
+                <p>רודף אחרי השחקן מטווח 40. גורם 10 נזק במגע. נהרג מקליע אחד. +100 נקודות.</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F47B;</span>
+                <h4>בוס זומבי</h4>
+                <p>ענק ואדום, עיניים זוהרות. טווח תוקפנות 80, 20 נזק. דורש מספר פגיעות. +500 נקודות.</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F411;</span>
+                <h4>כבשה</h4>
+                <p>מסתובבת בשטח עם רגליים זזות. ירייה בה מפילה בשר שמרפא 15 חיים.</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F995;</span>
+                <h4>טרודקטיל</h4>
+                <p>דינוזאור מעופף עם כנפיים מתנופפות. ירייה בו מפילה נוצת זהב = הגברת מהירות!</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F48E;</span>
+                <h4>יהלום</h4>
+                <p>כחול-ציאן, מסתובב. +50 נקודות. כל 10 יהלומים = עליית רמה!</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x2764;&#xFE0F;</span>
+                <h4>כדור חיים</h4>
+                <p>אדום וזוהר. משקם 20 נקודות חיים בנגיעה.</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F4A3;</span>
+                <h4>מוקש</h4>
+                <p>מונח ע"י השחקן. מתפוצץ כשאויב מתקרב. רדיוס פגיעה 8 יחידות!</p>
+            </div>
+            <div class="entity">
+                <span class="emoji">&#x1F4E6;</span>
+                <h4>ארגז מוקשים</h4>
+                <p>8 ארגזים פזורים במפה. כל ארגז נותן +2 מוקשים. מתחדש אחרי 15 שניות.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- GAME MECHANICS -->
+    <section class="section">
+        <h2>מכניקות משחק</h2>
+
+        <h3 style="color: #ffd700; margin-top: 20px; margin-bottom: 12px; font-size: 1.15rem;">מערכת קומבו</h3>
+        <p>
+            הריגת אויבים ברצף מפעילה מכפיל ניקוד! הריגה תוך 2 שניות מההריגה הקודמת מגדילה את
+            המכפיל (עד x5). ב-x3 ומעלה, טקסט הניקוד הופך לזהב. תכננו את הירי שלכם כדי לנצל
+            את המוקשים ולהשיג קומבו גדול!
+        </p>
+
+        <h3 style="color: #ffa500; margin-top: 24px; margin-bottom: 12px; font-size: 1.15rem;">סטמינה</h3>
+        <p>
+            ריצה מהירה (Shift) מרוקנת את מד הסטמינה תוך כ-4 שניות. הסטמינה מתמלאת לאט בהליכה
+            ומהר יותר בעמידה. כשהסטמינה נגמרת, חוזרים למהירות רגילה עד שהיא מתמלאת מחדש.
+        </p>
+
+        <h3 style="color: #4cff4c; margin-top: 24px; margin-bottom: 12px; font-size: 1.15rem;">עליית רמה</h3>
+        <p>
+            כל 10 יהלומים = עליית רמה. ברמה חדשה: האויבים מואצים, מתווספים אויבים חדשים,
+            ונפתחים יהלומים חדשים. כל 3 רמות מופיע בוס!
+        </p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TIPS -->
+    <section class="section">
+        <h2>טיפים</h2>
+        <ul class="tips-list">
+            <li>הניחו מוקשים ליד עצים או בנקודות צרות שבהן זומבים מתכנסים - הפיצוץ יפגע בקבוצה שלמה.</li>
+            <li>ירו בדינוזאורים מעופפים לפני שאתם רצים מבוס - הגברת המהירות תעזור לכם לברוח ולהתמקם.</li>
+            <li>צודו כבשים כשהחיים שלכם נמוכים - הבשר משקם 15 חיים ותמיד נשאר על הקרקע עד שתאספו אותו.</li>
+            <li>נצלו את מערכת הקומבו: הניחו מוקש ואז ירו באויב קרוב - המוקש יפוצץ את הנותרים ותקבלו מכפיל!</li>
+            <li>שמרו על סטמינה למצבי חירום - אל תרוצו כל הזמן, כי ברגע שתצטרכו לברוח, הסטמינה תהיה ריקה.</li>
+            <li>השתמשו במיני-מפה! היא מראה את מיקום כל האויבים, היהלומים והמוקשים שהנחתם.</li>
+            <li>בוסים מקבלים 3 נזק ממוקשים - תכננו 2-3 מוקשים בנתיב הבוס כדי להחליש אותו לפני שתתקרבו.</li>
+        </ul>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TECH -->
+    <section class="section">
+        <h2>דרישות טכניות</h2>
+        <p>
+            המשחק רץ בכל דפדפן מודרני (Chrome, Firefox, Edge, Safari) ואינו דורש התקנה.
+            מומלץ לשחק על מחשב שולחני עם עכבר לחוויה הטובה ביותר.
+        </p>
+        <p>
+            המשחק בנוי עם <strong>Three.js</strong> לגרפיקה תלת-ממדית ו-<strong>Web Audio API</strong>
+            לצלילים פרוצדורליים. כל הקוד נמצא בקובץ HTML יחיד!
+        </p>
+    </section>
+
+    <!-- CTA -->
+    <section class="hero" style="min-height: 30vh; padding: 60px 20px;">
+        <h2 style="font-size: 2rem; color: white; margin-bottom: 20px;">מוכנים להישרדות?</h2>
+        <a href="game.html" class="play-btn">התחילו לשחק</a>
+    </section>
+
+    <footer>
+        Minecraft Survival &mdash; משחק דפדפן תלת-ממדי
+    </footer>
+
+</body>
+
+</html>
